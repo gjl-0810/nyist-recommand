@@ -2,16 +2,17 @@
 import Header from "../common/Header.vue";
 import Footer from "../common/Footer.vue";
 import Nav from "../common/Nav.vue";
-
 </script>
 <template>
   <div class="warp">
     <Header class="header" />
-    <Nav class="nav"  />
+    <Nav class="nav" />
     <main>
-      <keep-alive>
-        <RouterView/>
-      </keep-alive>
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </main>
     <Footer class="footer" />
   </div>
@@ -24,8 +25,8 @@ import Nav from "../common/Nav.vue";
 }
 main {
   box-sizing: border-box;
-  height: 51.5rem;
-} 
+  height: 60rem;
+}
 .header {
   height: 1.6rem;
 }

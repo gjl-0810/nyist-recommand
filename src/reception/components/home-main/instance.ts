@@ -1,5 +1,5 @@
 
-export  const  regionMap = [
+ const  regionMap = [
     {region:'北京', key:'京'},
     {region:'天津', key:'津'},
     {region:'河北', key:'冀'},
@@ -35,3 +35,5 @@ export  const  regionMap = [
     {region:'澳门', key:'澳'},
     {region:'台湾', key:'台'},
 ]
+
+export {regionMap}
