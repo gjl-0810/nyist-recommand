@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { ElMessageBox } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import type { UploadProps } from "element-plus";
-
+interface upLoadDialogType {
+  title: string;
+  cancel: string;
+  confirm: string;
+}
+const { title, cancel, confirm } = reactive<upLoadDialogType>({
+  title: "简历上传",
+  cancel: "取消",
+  confirm: "上传",
+});
 const imageUrl = ref("");
 
-const handleAvatarSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
+const handleFileSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
   imageUrl.value = URL.createObjectURL(uploadFile.raw!);
 };
 
@@ -24,29 +33,23 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
 
 const dialogVisible = ref(false);
 
-const handleClose = (done: () => void) => {
-  ElMessageBox.confirm("Are you sure to close this dialog?")
-    .then(() => {
-      done();
-    })
-    .catch(() => {
-      // catch error
-    });
+const handleCancel = () => {
+  //
+  dialogVisible.value = false;
+};
+const handleConfirm = () => {
+  //
+  dialogVisible.value = false;
 };
 </script>
 <template>
   <el-button type="primary" @click="dialogVisible = true"> 一键投递 </el-button>
-  <el-dialog
-    v-model="dialogVisible"
-    title="简历上传"
-    width="30%"
-    :before-close="handleClose"
-  >
+  <el-dialog v-model="dialogVisible" :title="title" width="30%">
     <el-upload
       class="avatar-uploader"
       action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
       :show-file-list="false"
-      :on-success="handleAvatarSuccess"
+      :on-success="handleFileSuccess"
       :before-upload="beforeAvatarUpload"
     >
       <img v-if="imageUrl" :src="imageUrl" class="avatar" />
@@ -54,8 +57,8 @@ const handleClose = (done: () => void) => {
     </el-upload>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogVisible = false"> Confirm </el-button>
+        <el-button @click="handleCancel">{{ cancel }}</el-button>
+        <el-button type="primary" @click="handleConfirm"> {{ confirm }} </el-button>
       </span>
     </template>
   </el-dialog>
