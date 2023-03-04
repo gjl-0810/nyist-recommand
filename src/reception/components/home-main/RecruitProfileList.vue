@@ -12,6 +12,7 @@ import {
 } from "@element-plus/icons-vue";
 import { fuzzy } from "@/http/reception";
 import UpLoad from "@/components/UpLoad.vue";
+import { ElMessage } from "element-plus";
 export type listMsgMap = {
   key: string;
   isList: number; //是否上市
@@ -28,7 +29,6 @@ const isListMap = {
   1: { type: "success", label: "已上市" },
   2: { type: "danger", label: "未上市" },
 };
-
 const recommandList = await recommandListMap(true, "asdf");
 </script>
 <template>
@@ -45,7 +45,7 @@ const recommandList = await recommandListMap(true, "asdf");
                 :type="isListMap[item.isList as keyof typeof isListMap].type"
                 class="isList-tag"
                 effect="light"
-                round="true"
+                round
               >
                 {{ isListMap[item.isList as keyof typeof isListMap].label }}
               </el-tag>
@@ -58,7 +58,7 @@ const recommandList = await recommandListMap(true, "asdf");
             <div class="description-item">
               <el-icon class="iconStyle"><User /></el-icon> 招聘人数：{{ item.count }}
             </div>
-            <div><UpLoad /></div>
+            <UpLoad />
           </div>
         </template>
         <div class="description-content">

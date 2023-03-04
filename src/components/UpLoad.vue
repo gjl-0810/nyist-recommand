@@ -1,66 +1,142 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
-import { ElMessageBox } from "element-plus";
-import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
-import type { UploadProps } from "element-plus";
+import { ElMessage, type UploadFile, type UploadFiles } from "element-plus";
+
+import type { UploadProps, UploadUserFile } from "element-plus";
 interface upLoadDialogType {
   title: string;
   cancel: string;
   confirm: string;
+  limit: number;
+  action: string;
+  fileList: UploadUserFile[];
 }
-const { title, cancel, confirm } = reactive<upLoadDialogType>({
+interface progressType {
+  percentage: number;
+  type: string;
+}
+const { title, cancel, confirm, limit, action, fileList } = reactive<upLoadDialogType>({
   title: "简历上传",
   cancel: "取消",
   confirm: "上传",
+  limit: 1,
+  action: "#",
+  fileList: [],
 });
-const imageUrl = ref("");
+const { percentage, type } = reactive<progressType>({
+  percentage: 0,
+  type: "success",
+});
+const regFileType = new RegExp("application/pdf$", "i");
 
-const handleFileSuccess: UploadProps["onSuccess"] = (response, uploadFile) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!);
-};
+const handleRemove =(uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+  // 清空数组
+  console.log(123);
 
-const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
-  if (rawFile.type !== "image/jpeg") {
-    ElMessage.error("Avatar picture must be JPG format!");
+  fileList.pop();
+  console.log(fileList);
+
+}
+// 文件类型，大小判断
+const handleChange: UploadProps["onChange"] = (uploadFile) => {
+  if (!regFileType.test(uploadFile.raw?.type as string)) {
+    ElMessage.error("文件格式必须为pdf");
     return false;
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error("Avatar picture size can not exceed 2MB!");
+  } else if ((uploadFile.size as number) / 1024 / 1024 > 5) {
+    ElMessage.error("文件最大不超过5M");
     return false;
   }
+  fileList.push({ name: uploadFile.name, raw: uploadFile.raw });
+  console.log(fileList);
   return true;
 };
 
 const dialogVisible = ref(false);
 
-const handleCancel = () => {
+const handleCancel = (e: Event) => {
+  dialogVisible.value = false;
+};
+const handleConfirm = (e: Event) => {
   //
   dialogVisible.value = false;
 };
-const handleConfirm = () => {
-  //
-  dialogVisible.value = false;
+const handelUpload = () => {
+  dialogVisible.value = true;
+};
+
+const handelStopPropagation = (e: Event) => {
+  // 事件代理的作用，阻止事件继续传播，导致操作dialog时手风琴打开/关闭
+  e.stopPropagation();
 };
 </script>
 <template>
-  <el-button type="primary" @click="dialogVisible = true"> 一键投递 </el-button>
-  <el-dialog v-model="dialogVisible" :title="title" width="30%">
-    <el-upload
-      class="avatar-uploader"
-      action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-      :show-file-list="false"
-      :on-success="handleFileSuccess"
-      :before-upload="beforeAvatarUpload"
-    >
-      <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-      <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-    </el-upload>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="handleCancel">{{ cancel }}</el-button>
-        <el-button type="primary" @click="handleConfirm"> {{ confirm }} </el-button>
-      </span>
-    </template>
-  </el-dialog>
+  <div @click="handelStopPropagation">
+    <el-button type="primary" @click="handelUpload"> 一键投递 </el-button>
+    <el-dialog v-model="dialogVisible" :title="title" width="30rem">
+      <div class="upload-dialog">
+        <el-upload
+          class="resume-uploader"
+          v-model:file-list="fileList"
+          :action="action"
+          :on-change="handleChange"
+          :on-remove="handleRemove"
+          :limit="limit"
+          :auto-upload="false"
+        >
+          <!-- <img v-if="fileList" :src="fileList[0].raw" class="avatar" /> -->
+          <el-icon v-if="!fileList.length" class="avatar-uploader-icon"><Plus /></el-icon>
+        </el-upload>
+        <el-progress type="dashboard" :percentage="percentage" :status="type">
+          <template #default="{ percentage }">
+            <span class="percentage-value">{{ percentage }}%</span>
+            <span class="percentage-label">当前进度</span>
+          </template>
+        </el-progress>
+      </div>
+
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCancel">{{ cancel }}</el-button>
+          <el-button type="primary" @click="handleConfirm"> {{ confirm }} </el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </div>
 </template>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.upload-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  .resume-uploader {
+    display: flex;
+    border: 0.00625rem dashed var(--el-border-color);
+    border-radius: 0.375rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+  }
+  .resume-uploader:hover {
+    border-color: var(--el-color-primary);
+  }
+}
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 7.875rem;
+  height: 7.875rem;
+  text-align: center;
+}
+.percentage-value {
+  display: block;
+  margin-top: 0.625rem;
+  font-size: 1.75rem;
+}
+.percentage-label {
+  display: block;
+  margin-top: 0.625rem;
+  font-size: 0.75rem;
+}
+</style>

@@ -9,15 +9,13 @@ import Nav from "../common/Nav.vue";
     <Nav class="nav" />
     <main>
       <router-view v-slot="{ Component }">
-        <keep-alive>
-          <component :is="Component" />
-        </keep-alive>
+        <component :is="Component" />
       </router-view>
     </main>
     <Footer class="footer" />
   </div>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 .warp {
   overflow-x: hidden;
   width: 100vw;

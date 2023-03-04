@@ -1,21 +1,29 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse }  from "axios";
 import { ElMessage } from 'element-plus'
-export function request(config: AxiosRequestConfig<any>,success: (arg0: AxiosResponse<any, any>) => void)
+
+const BASE_URL = 'http://127.0.0.1:3000';
+
+function request(config: AxiosRequestConfig<any>,success: (arg0: AxiosResponse<any, any>) => void)
 {
     const instance=axios.create({        
-        baseURL: "http://www.nyqyfw.com:81",    
+        baseURL: BASE_URL,    
         timeout:500000,  
+        withCredentials:true,
         headers: {                              // 请求头配置
-            "Content-Type": "application/json;"
+            "Content-Type": "application/json;",
+            'Authorization':'',
         }      
     })
     instance(config).then(
         res=>{
             success(res)
         })
-        .catch(err=>{                       
+        .catch(err=>{
+            console.error(err);          
             ElMessage.error('请求超时')
-        })        
+        })
 }
-// 选择文件时 使用url
-export const Url='http://www.nyqyfw.com:81/file?articleid=';
+export {
+    BASE_URL,
+    request,
+}

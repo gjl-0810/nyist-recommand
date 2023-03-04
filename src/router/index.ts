@@ -21,11 +21,11 @@ const router = createRouter({
         },
         {
           path:'resume',
-          component: () => import('@/reception/components/home-main/HomeMain.vue'),
+          component: () => import('@/reception/components/resume-main/ResumeMain.vue'),
         },
         {
           path:'personal',
-          component: () => import('@/reception/components/home-main/HomeMain.vue'),
+          component: () => import('@/reception/components/resume-main/ResumeMain.vue'),
         },
         {
           path:'error',
