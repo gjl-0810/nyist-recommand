@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { Plus } from "@element-plus/icons-vue";
-import { ElMessage, type UploadFile, type UploadFiles } from "element-plus";
+import { ElMessage, type UploadFile, type UploadFiles, type UploadInstance, type UploadProgressEvent, type UploadRawFile } from "element-plus";
 
 import type { UploadProps, UploadUserFile } from "element-plus";
+import { fileUpload } from "@/http/util/util";
+import { LOGIN_STATUS_MAP, type MessageStatus } from "@/utils/instance";
+import type { AxiosProgressEvent } from "axios";
+import { computed } from "@vue/reactivity";
 interface upLoadDialogType {
   title: string;
   cancel: string;
@@ -11,33 +15,31 @@ interface upLoadDialogType {
   limit: number;
   action: string;
   fileList: UploadUserFile[];
+  file:FormData
 }
 interface progressType {
   percentage: number;
   type: string;
 }
-const { title, cancel, confirm, limit, action, fileList } = reactive<upLoadDialogType>({
+const upload = ref<UploadInstance>();
+const uploadInfo = reactive<upLoadDialogType>({
   title: "简历上传",
   cancel: "取消",
   confirm: "上传",
   limit: 1,
   action: "#",
   fileList: [],
+  file:new FormData,
 });
-const { percentage, type } = reactive<progressType>({
+const { title, cancel, confirm, limit, action, fileList } = uploadInfo
+const progressInfo = reactive<progressType>({
   percentage: 0,
   type: "success",
 });
+const {type}  = progressInfo
 const regFileType = new RegExp("application/pdf$", "i");
-
-const handleRemove =(uploadFile: UploadFile, uploadFiles: UploadFiles) => {
-  // 清空数组
-  console.log(123);
-
-  fileList.pop();
-  console.log(fileList);
-
-}
+const dialogVisible = ref(false);
+const isPercentage = computed(() => progressInfo.percentage)
 // 文件类型，大小判断
 const handleChange: UploadProps["onChange"] = (uploadFile) => {
   if (!regFileType.test(uploadFile.raw?.type as string)) {
@@ -47,24 +49,53 @@ const handleChange: UploadProps["onChange"] = (uploadFile) => {
     ElMessage.error("文件最大不超过5M");
     return false;
   }
-  fileList.push({ name: uploadFile.name, raw: uploadFile.raw });
-  console.log(fileList);
+  fileList&&fileList.pop()
+  // 展示缩略图
+  fileList.push({ name: uploadFile.name});
   return true;
 };
-
-const dialogVisible = ref(false);
-
 const handleCancel = (e: Event) => {
   dialogVisible.value = false;
 };
-const handleConfirm = (e: Event) => {
-  //
-  dialogVisible.value = false;
+const handleConfirm = (params: { file: File; }) => {
+    uploadInfo.file.set('file',params.file,encodeURIComponent(params.file.name));
+    fileUpload(uploadInfo.file,handelProgess,(res: { data: { message: any; code: any; }; })=>{
+    uploadInfo.file.set('file','');
+      const {message,code} = res.data
+      ElMessage({
+        grouping: true,
+        message: message,
+        type: LOGIN_STATUS_MAP[code] as MessageStatus,
+      })
+      // dialogVisible.value = false;
+    })
 };
-const handelUpload = () => {
+const handleSubmit=()=>{
+  if(fileList.length)
+  upload.value!.submit()
+  else
+  ElMessage({
+        grouping: true,
+        message: '请先选择简历',
+        type: 'warning',})
+}
+const handelRemove = () => {
+  fileList.pop();
+  if(isPercentage)
+   progressInfo.percentage = 0;
+}
+const handelDialog = () => {
   dialogVisible.value = true;
 };
-
+const handelProgess = (progressEvent: AxiosProgressEvent) :void =>{
+  if(progressEvent.total){
+    progressInfo.percentage = Math.round( (progressEvent.loaded * 100) / progressEvent.total  );
+  }
+}
+/**
+ * 阻止事件传递
+ * @param e
+ */
 const handelStopPropagation = (e: Event) => {
   // 事件代理的作用，阻止事件继续传播，导致操作dialog时手风琴打开/关闭
   e.stopPropagation();
@@ -72,33 +103,37 @@ const handelStopPropagation = (e: Event) => {
 </script>
 <template>
   <div @click="handelStopPropagation">
-    <el-button type="primary" @click="handelUpload"> 一键投递 </el-button>
+    <el-button type="primary" @click="handelDialog"> 一键投递 </el-button>
     <el-dialog v-model="dialogVisible" :title="title" width="30rem">
       <div class="upload-dialog">
         <el-upload
+          ref="upload"
           class="resume-uploader"
           v-model:file-list="fileList"
           :action="action"
           :on-change="handleChange"
-          :on-remove="handleRemove"
+          :on-remove="handelRemove"
           :limit="limit"
           :auto-upload="false"
+          :http-request="handleConfirm"
         >
-          <!-- <img v-if="fileList" :src="fileList[0].raw" class="avatar" /> -->
           <el-icon v-if="!fileList.length" class="avatar-uploader-icon"><Plus /></el-icon>
         </el-upload>
-        <el-progress type="dashboard" :percentage="percentage" :status="type">
+        <el-progress
+          type="dashboard"
+          :percentage="progressInfo.percentage"
+          :status="type"
+        >
           <template #default="{ percentage }">
             <span class="percentage-value">{{ percentage }}%</span>
             <span class="percentage-label">当前进度</span>
           </template>
         </el-progress>
       </div>
-
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="handleCancel">{{ cancel }}</el-button>
-          <el-button type="primary" @click="handleConfirm"> {{ confirm }} </el-button>
+          <el-button type="primary" @click="handleSubmit"> {{ confirm }} </el-button>
         </span>
       </template>
     </el-dialog>

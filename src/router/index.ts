@@ -6,8 +6,18 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "login",
+      name: "/",
       component: loginOrRegisterVue,
+      redirect:'/login',
+      children:[ 
+        {
+        path:'login',
+        component: () => import('@/views/LoginPage.vue'),
+      },
+      {
+        path:'registe',
+        component: () => import('@/views/RegisterPage.vue'),
+      },]
     },
     {
       path: "/rep",
@@ -32,7 +42,7 @@ const router = createRouter({
           component: ()=> import('@/views/ErrorPage.vue')
         }
       ]
-    },
+    }
   ],
 });
 // router.beforeEach(async (to, from) => {

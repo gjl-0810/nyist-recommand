@@ -7,7 +7,11 @@ function getValue(key: string) : string {
 function setValue(key: string, value: string) {
     localStorage.setItem(key, value);
 }
+function clearValue() {
+    localStorage.clear()
+}
 export {
     getValue,
-    setValue
+    setValue,
+    clearValue
 }

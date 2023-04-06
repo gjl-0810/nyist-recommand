@@ -1,12 +1,29 @@
-const LOGIN = '已登录';
-const UNLOGIN = '未登录';
-const LOGIN_SUCCESS = '登录成功';
-const LOGIN_FAIL = '登录失败,请检查用户名密码是否正确';
 
-const LOGIN_STATUS_MAP ={
-    100:LOGIN,
-    101:UNLOGIN,
-    102:LOGIN_SUCCESS,
-    103:LOGIN_FAIL,
+
+const STATUS_JOB = '求职者';
+const STATUS_RECOMMOD = '内推者';
+
+interface Status{
+    [index:number] :string,
+    100:'success',
+    101:'success',
+    103:'error',
+    104:'error',
 }
-export {LOGIN_STATUS_MAP}
+type MessageStatus = "success" | "warning" | "info" | "error";
+const LOGIN_STATUS_MAP:Status ={
+    100:'success',
+    101:'success',
+    103:'error',
+    104:'error',
+}
+type STATUS_MAP_TYPE = {
+    label: number;
+    value: string;
+}[]
+const STATUS_MAP = [
+    { label: 0, value: STATUS_JOB},
+    { label: 1, value: STATUS_RECOMMOD},
+]
+export { LOGIN_STATUS_MAP, STATUS_MAP };
+export type { STATUS_MAP_TYPE, MessageStatus };

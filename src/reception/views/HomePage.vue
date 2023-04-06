@@ -26,7 +26,8 @@ main {
   height: 60rem;
 }
 .header {
-  height: 1.6rem;
+  line-height: 2.6rem;
+  height: 2.6rem;
 }
 .nav {
   height: 3.8rem;

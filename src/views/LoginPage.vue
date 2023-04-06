@@ -1,32 +1,34 @@
 <script setup lang="ts">
-import { login } from "@/http/reception";
+import { getValue, setValue } from "@/cath";
+import { login } from "@/http/reception/reception";
+import type { LoginType } from "@/http/reception/receptionType";
 import router from "@/router";
-import { LOGIN_STATUS_MAP } from "@/utils/instance";
-import type { FormInstance } from "element-plus/es/components";
+import { LOGIN_STATUS_MAP, type MessageStatus } from "@/utils/instance";
+import { ElMessage, type FormInstance } from "element-plus";
 import { reactive, ref } from "vue";
-interface LoginType {
-  username: string;
-  password: string;
-}
+
 
 const loginInstance = reactive<LoginType>({
   username: "",
   password: "",
 });
-const { username, password } = loginInstance;
 const formRef = ref<FormInstance>();
 const onLogin = (formEl: FormInstance | undefined) => {
   // login({ userName, password }, (res) => {});
   if (!formEl) return;
   formEl.validate((valid) => {
     if (valid) {
-      // login({ username, password }, (res) => {
-      //   const {code} = res.data
-      //   ElMessage.success(`${LOGIN_STATUS_MAP[code as keyof typeof LOGIN_STATUS_MAP] }`);
-      // });
-      router.push("/rep/home");
+      login(loginInstance, (res) => {
+        const {code,message,token} = res.data;
+        ElMessage({
+          grouping:true,
+          type:LOGIN_STATUS_MAP[code] as MessageStatus,
+          message
+        })
+          token&&setValue('token',token);
+          router.push(getValue('NAVKey')||"/rep/home");
+      });
     } else {
-      console.log("error submit!");
       return false;
     }
   });

@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import LoginPageVue from "./LoginPage.vue";
-import RegisterPageVue from "./RegisterPage.vue";
-import { ref } from "vue";
+import router from "@/router";
+import { reactive, ref } from "vue";
 
-const isLogin = ref<boolean>(true);
-const content = ref<string>("注册");
+const isLogin = ref<number>(0);
+const contextPathMap = reactive({
+  0: { path: "/login", content: "登录" },
+  1: { path: "/registe", content: "注册" },
+});
 // 修改显示组件
 const changeStatus = () => {
-  isLogin.value = !isLogin.value;
-  content.value = content.value === "注册" ? "登录" : "注册";
+  isLogin.value = isLogin.value === 0 ? 1 : 0;
+  router.push(contextPathMap[isLogin.value as keyof typeof contextPathMap].path);
 };
 </script>
 <template>
@@ -22,13 +24,15 @@ const changeStatus = () => {
               <el-col :span="12" class="tip-center"><span>NYST-WR</span></el-col>
               <el-col :span="12" class="tip-center"
                 ><el-button type="success" link @click="changeStatus">{{
-                  content
+                  contextPathMap[isLogin as keyof typeof contextPathMap].content
                 }}</el-button></el-col
               >
             </el-row>
-            <keep-alive>
-              <component :is="isLogin ? LoginPageVue : RegisterPageVue"></component>
-            </keep-alive>
+            <router-view v-slot="{ Component }">
+              <keep-alive>
+                <component :is="Component" />
+              </keep-alive>
+            </router-view>
           </div>
         </el-col>
       </el-row>

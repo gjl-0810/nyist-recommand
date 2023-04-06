@@ -17,6 +17,7 @@
     "pdf-viewer-vue": "^0.2.7",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
+    "vue-pdf": "^4.3.0",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

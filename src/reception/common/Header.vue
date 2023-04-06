@@ -1,30 +1,36 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
+import { clearValue } from "@/cath";
+import router from "@/router";
+import { ElMessage } from "element-plus";
 import { reactive, toRefs } from "vue";
 type headerDateType = {
   iconSrc: string;
   content: string;
-  typeColor: string;
 };
 const headerDate = reactive<headerDateType>({
   iconSrc: "",
   content: "南阳理工微软工作室内推系统",
-  typeColor: "a",
 });
-const { iconSrc, content, typeColor } = toRefs(headerDate);
+const { iconSrc, content } = toRefs(headerDate);
+const handleCommand = (command: string | number | object) => {
+  router.push("/login");
+};
 </script>
 <template>
   <header class="header">
     <img :src="iconSrc" alt="图标" />
     <span>{{ content }}</span>
-    <el-switch
-      v-model="typeColor"
-      class="ml-2"
-      inline-prompt
-      style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
-      active-text="暗色调"
-      inactive-text="亮色调"
-    />
+    <el-dropdown @command="handleCommand" class="dropMenu">
+      <el-avatar
+        src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+      />
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item command="legout">退出登录</el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
   </header>
 </template>
 <style lang="scss">
@@ -32,5 +38,8 @@ const { iconSrc, content, typeColor } = toRefs(headerDate);
   width: 100vw;
   display: flex;
   justify-content: space-around;
+}
+.dropMenu {
+  cursor: pointer;
 }
 </style>

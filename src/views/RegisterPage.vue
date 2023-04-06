@@ -1,39 +1,95 @@
 <script setup lang="ts">
+import { registe } from "@/http/reception/reception";
+import type { RegisteType } from "@/http/reception/receptionType";
 import router from "@/router";
-import { reactive, toRefs } from "vue";
-interface RegisterType {
-  user: string;
-  passWord: string;
-  newPassWord: string;
-  email: string;
-}
-const formInline = reactive<RegisterType>({
-  user: "",
-  passWord: "",
-  newPassWord: "",
+import { STATUS_MAP } from "@/utils/instance";
+import { ElMessage, type FormInstance } from "element-plus";
+import { reactive, ref } from "vue";
+
+const formInline = reactive<RegisteType>({
+  username: "",
+  password: "",
   email: "",
+  isRecommond: 0,
+  nickName:'',
+  userContactInfo:''
 });
-const { user, passWord, newPassWord, email } = toRefs(formInline);
-const onSubmit = () => {
-  router.push("/backstage/home");
-};
+const {  isRecommond } = formInline;
+const formRef = ref<FormInstance>();
+const onSubmit = (formRef:  FormInstance | undefined) => {
+  if(!formRef) return;
+  formRef.validate((valid) => {
+    if(valid){
+      registe(formInline,
+          res=>{
+            switch(res.data.code){
+              case 200:{
+                ElMessage.success(res.data.message)
+                router.push('/login')
+              }
+              case 400:{
+                ElMessage.error(res.data.message)
+                router.push('/login')
+              }
+              default:{
+                ElMessage.error(res.data.message)
+              }
+            }
+      })
+    }else
+    return false;
+  })
+}
 </script>
 <template>
-  <el-form :model="formInline" class="form">
-    <el-form-item label="账号">
-      <el-input v-model="user" type="number" max="10" placeholder="请输入学号" />
+  <el-form :model="formInline" class="form" ref="formRef">
+    <el-form-item
+      label="账号"
+      prop="username"
+      required
+      :rules="[{ required: true, type: 'string', message: '请输入学号' }]"
+    >
+      <el-input v-model="formInline.username" type="string" placeholder="请输入学号" />
     </el-form-item>
-    <el-form-item label="密码">
-      <el-input v-model="passWord" placeholder="请输入密码" />
+    <el-form-item
+      label="密码"
+      prop="password"
+      required
+      :rules="[{ required: true, type: 'string', message: '请输入密码' }]"
+    >
+      <el-input v-model="formInline.password" placeholder="请输入密码" />
     </el-form-item>
-    <el-form-item label="密码">
-      <el-input v-model="newPassWord" placeholder="请再次输入密码" />
+    <el-form-item
+      label="邮箱"
+      prop="email"
+      required
+      :rules="[{ required: true, type: 'string', message: '请填写邮箱' }]"
+    >
+      <el-input
+        v-model="formInline.email"
+        type="email"
+        placeholder="目前支持qq、163邮箱"
+      />
     </el-form-item>
-    <el-form-item label="邮箱">
-      <el-input v-model="email" type="email" placeholder="目前支持qq、163邮箱" />
+    <el-form-item
+      label="联系方式"
+      prop="userContactInfo"
+      required
+      :rules="[{ required: true, type: 'string', message: '请填写联系方式' }]"
+    >
+      <el-input v-model="formInline.userContactInfo" type="email" placeholder="请填写" />
     </el-form-item>
     <el-form-item>
-      <el-button class="registerButton" type="primary" @click="onSubmit">注册</el-button>
+      <div class="status">
+        <el-radio-group v-model="isRecommond" v-for="radomItem in STATUS_MAP">
+          <el-radio :label="radomItem.label" size="large">{{ radomItem.value }}</el-radio>
+        </el-radio-group>
+      </div>
+    </el-form-item>
+    <el-form-item>
+      <el-button class="registerButton" type="primary" @click="onSubmit(formRef)"
+        >注册</el-button
+      >
     </el-form-item>
   </el-form>
 </template>
@@ -46,5 +102,11 @@ const onSubmit = () => {
 .registerButton {
   margin: 0 auto;
   width: 10rem;
+}
+.status {
+  width: 20rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 </style>

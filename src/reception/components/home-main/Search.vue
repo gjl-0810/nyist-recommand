@@ -10,8 +10,8 @@ const inputContent = ref<string>("");
 const select = ref<string>("");
 </script>
 <template>
-  <el-card class="search-warp" body-style="margin:0">
-    <template #header>
+  <el-card class="card-warp" body-style="margin:0">
+    <div class="search-warp">
       <el-input
         v-model="inputContent"
         placeholder="请输入公司名称"
@@ -31,23 +31,26 @@ const select = ref<string>("");
           <el-button :icon="Search" />
         </template>
       </el-input>
-    </template>
-
-    <el-switch
-      v-model="isList"
-      class="switch-content"
-      inline-prompt
-      active-text="已上市"
-      inactive-text="未上市"
-    />
+      <el-switch
+        v-model="isList"
+        class="switch-content"
+        inline-prompt
+        active-text="已上市"
+        inactive-text="未上市"
+      />
+    </div>
   </el-card>
 </template>
 <style lang="scss" scoped>
-.search-warp {
+.card-warp {
   width: 80vw;
+  margin: 0 auto;
+}
+.search-warp {
   margin: 0.5rem auto 0.5rem;
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 }
 .input-with-select {
   margin: 0.1rem;
