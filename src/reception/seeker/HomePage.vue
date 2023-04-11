@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Header from "../common/Header.vue";
-import Footer from "../common/Footer.vue";
-import Nav from "../common/Nav.vue";
+import Header from "@/reception/common/Header.vue";
+import Footer from "@/reception/common/Footer.vue";
+import Nav from "./common/Nav.vue";
 </script>
 <template>
   <div class="warp">

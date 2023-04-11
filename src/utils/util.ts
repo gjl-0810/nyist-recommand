@@ -22,7 +22,9 @@ function arrayBufferToObj(source:ArrayBuffer,type?:string) {
     const jsonString = decoder.decode(dataView);
     return JSON.parse(jsonString) as axiosResponse;
 }
+
+  
  export{
     testApi,
-    arrayBufferToObj
+    arrayBufferToObj,
  }

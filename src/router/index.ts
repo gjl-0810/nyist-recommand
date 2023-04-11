@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: "/rep",
       name: "repHome",
-      // 前台首页
+      // 求职者首页
       component: () => import("@/reception/views/HomePage.vue"),
       children:[
         {
@@ -35,14 +35,39 @@ const router = createRouter({
         },
         {
           path:'personal',
-          component: () => import('@/reception/components/resume-main/ResumeMain.vue'),
+          component: () => import('@/reception/components/personal-main/Personal.vue'),
+          redirect:'/rep/personal/info',
+          children:[
+            {path:'info',component:()=>import('@/reception/components/personal-main/personal-info/Personal-info.vue')},
+            {path:'deliverResume',component:()=>import('@/reception/components/personal-main/personal-deliver/Personal-deliver-resume.vue')},
+          ]
         },
         {
           path:'error',
           component: ()=> import('@/views/ErrorPage.vue')
         }
       ]
+    },
+    {
+      path:"/recommond",
+      name:'recommondHome',
+      component:()=> import ('@/reception/views/RecommondHome.vue'),
+      children:[
+        {
+          path:'home',
+          component:()=> import ('@/reception/views/RecommondHome.vue'),
+        },
+        {
+          path:'resume',
+          component:()=> import ('@/reception/views/RecommondHome.vue'),
+        },
+        {
+          path:'personal',
+          component: () => import('@/reception/components/personal-main/Personal.vue'),
+        }
+      ]
     }
+  
   ],
 });
 // router.beforeEach(async (to, from) => {

@@ -1,4 +1,4 @@
-import { clearValue, getValue } from "@/cath";
+import { clearValue, getValue,TOKEN } from "@/cath";
 import router from "@/router";
 import { arrayBufferToObj } from "@/utils/util";
 import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse }  from "axios";
@@ -13,7 +13,7 @@ function request(config: AxiosRequestConfig<any>,success: (arg0: AxiosResponse<a
         timeout:500000,
         withCredentials:true,
         headers:{
-            Authorization:`Bearer ${getValue('token')}`,
+            Authorization:`Bearer ${getValue(TOKEN)}`,
             'Content-Type':'application/x-www-form-urlencoded'
         }      
     });
@@ -33,7 +33,10 @@ function request(config: AxiosRequestConfig<any>,success: (arg0: AxiosResponse<a
             clearValue();
             router.push('/login');
         }
-        return Promise.reject(err.response&&err.response.data);
+        if(err.code==='ERR_NETWORK'){
+            err.message = '网络连接错误，请检查网络！'
+        }
+        return Promise.reject(err.response&&err.response.data||err);
     });
     // 处理请求失败
     instance(config).then(
@@ -42,7 +45,7 @@ function request(config: AxiosRequestConfig<any>,success: (arg0: AxiosResponse<a
         })
         .catch(err=>{
             // 进行前端网络请求错误拦截     
-            ElMessage.error({grouping:true,message:err.message})
+            ElMessage.error({grouping:true,message:err.message||'未知错误'})
         })
 }
 export {

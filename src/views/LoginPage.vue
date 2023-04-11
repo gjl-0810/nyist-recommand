@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { getValue, setValue } from "@/cath";
-import { login } from "@/http/reception/reception";
+import { NAV_KEY, TOKEN, USERNAME, USER_NICk_NAME, getValue, setValue } from "@/cath";
+import { login } from "@/http/reception/account";
+import LoginDialog from './LoginDialog.vue'
 import type { LoginType } from "@/http/reception/receptionType";
 import router from "@/router";
 import { LOGIN_STATUS_MAP, type MessageStatus } from "@/utils/instance";
@@ -13,20 +14,23 @@ const loginInstance = reactive<LoginType>({
   password: "",
 });
 const formRef = ref<FormInstance>();
+const dialogInfo = {
+  tipMessage:'已检测到多个身份，请选择登录页面',
+  recommonder:'内推者',
+  seekers:'求职者'
+}
+const dialogStatus = ref(false);
+const {tipMessage,recommonder,seekers} = dialogInfo
 const onLogin = (formEl: FormInstance | undefined) => {
-  // login({ userName, password }, (res) => {});
   if (!formEl) return;
   formEl.validate((valid) => {
     if (valid) {
       login(loginInstance, (res) => {
-        const {code,message,token} = res.data;
-        ElMessage({
-          grouping:true,
-          type:LOGIN_STATUS_MAP[code] as MessageStatus,
-          message
-        })
-          token&&setValue('token',token);
-          router.push(getValue('NAVKey')||"/rep/home");
+        const {token,username,userNickName} = res.data;
+        dialogStatus.value = !dialogStatus.value;
+        token&&setValue(TOKEN,token);
+        setValue(USERNAME,username)
+        setValue(USER_NICk_NAME,userNickName)
       });
     } else {
       return false;
@@ -46,7 +50,7 @@ const onLogin = (formEl: FormInstance | undefined) => {
       label="账号"
       prop="username"
       required
-      :rules="[{ required: true, type: 'string', message: '请填写账号' }]"
+      :rules="[{ required: true, type: 'number', message: '请填写账号' }]"
     >
       <el-input v-model.number="loginInstance.username" placeholder="请输入账号" />
     </el-form-item>
@@ -64,6 +68,20 @@ const onLogin = (formEl: FormInstance | undefined) => {
       >
     </el-form-item>
   </el-form>
+  <LoginDialog
+    :is-dialog="dialogStatus"
+    :skip-seekers="seekers"
+    :skip-recommonder="recommonder"
+    :Tipmessage="tipMessage"
+    :success-cb="
+      () =>
+        ElMessage({
+          grouping: true,
+          type: 'success',
+          message: '登录成功',
+        })
+    "
+  />
 </template>
 
 <style lang="scss" scoped>

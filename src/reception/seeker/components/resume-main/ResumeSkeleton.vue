@@ -6,7 +6,7 @@ const { isLoading } = defineProps<{
 }>();
 </script>
 <template>
-  <el-skeleton :loading="isLoading" animated rows="1" throttle="100">
+  <el-skeleton :loading="isLoading" animated :rows="1" :throttle="100">
     <template #template>
       <el-skeleton-item class="pdf_view" variant="image" />
     </template>

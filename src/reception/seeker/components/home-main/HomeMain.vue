@@ -13,24 +13,22 @@ const recommondInfoList = reactive({
   recommandList: [] as recommondInfo[],
   total: 0,
 });
-
-watchEffect(() => {
-  if (Recruit.value.pageNumber >= 0) {
-    fuzzy({ pageSize: 20, pageNumber: Recruit.value.pageNumber }, (res) => {
-      const { recommondInfo, total } = res.data;
-      recommondInfoList.recommandList = recommondInfo;
-      recommondInfoList.total = total;
-    });
-  }
-});
-onMounted(() => {
-  // fuzzy({ pageSize: 10, pageNumber: Recruit.value.pageNumber }, (res) => {
-  //   const { recommondInfo, total } = res.data;
-  //   recommondInfoList.recommandList = recommondInfo;
-  //   recommondInfoList.total = total;
-  // });
-});
-const isLoading = computed(() => !Boolean(recommondInfoList.recommandList));
+let count = 0;
+watchEffect(
+  () => {
+    if (Recruit.value && Recruit.value.pageNumber >= 0) {
+      if (count === 0 || Recruit.value.pageNumber >= 1)
+        fuzzy({ pageSize: 11, pageNumber: Recruit.value.pageNumber }, (res) => {
+          const { recommondInfo, total } = res.data;
+          recommondInfoList.recommandList.push(...recommondInfo);
+          recommondInfoList.total = total;
+          count = count + 1;
+        });
+    }
+  },
+  { flush: "post" }
+);
+const isLoading = computed(() => !Boolean(recommondInfoList.recommandList.length));
 </script>
 <template>
   <Carousel />

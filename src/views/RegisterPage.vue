@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { registe } from "@/http/reception/reception";
+import { registe } from "@/http/reception/account";
 import type { RegisteType } from "@/http/reception/receptionType";
 import router from "@/router";
 import { STATUS_MAP } from "@/utils/instance";
@@ -22,19 +22,8 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
     if(valid){
       registe(formInline,
           res=>{
-            switch(res.data.code){
-              case 200:{
-                ElMessage.success(res.data.message)
-                router.push('/login')
-              }
-              case 400:{
-                ElMessage.error(res.data.message)
-                router.push('/login')
-              }
-              default:{
-                ElMessage.error(res.data.message)
-              }
-            }
+            ElMessage.success(res.data.message)
+            router.push('/login')
       })
     }else
     return false;
@@ -72,13 +61,26 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
       />
     </el-form-item>
     <el-form-item
+      label="昵称"
+      prop="nickName"
+      required
+      :rules="[{ required: true, type: 'string', message: '请填写昵称' }]"
+    >
+      <el-input v-model="formInline.nickName" type="email" placeholder="请填写昵称" />
+    </el-form-item>
+    <el-form-item
       label="联系方式"
       prop="userContactInfo"
       required
       :rules="[{ required: true, type: 'string', message: '请填写联系方式' }]"
     >
-      <el-input v-model="formInline.userContactInfo" type="email" placeholder="请填写" />
+      <el-input
+        v-model="formInline.userContactInfo"
+        type="email"
+        placeholder="请填写联系方式"
+      />
     </el-form-item>
+
     <el-form-item>
       <div class="status">
         <el-radio-group v-model="isRecommond" v-for="radomItem in STATUS_MAP">

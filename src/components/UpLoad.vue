@@ -59,15 +59,15 @@ const handleCancel = (e: Event) => {
 };
 const handleConfirm = (params: { file: File; }) => {
     uploadInfo.file.set('file',params.file,encodeURIComponent(params.file.name));
-    fileUpload(uploadInfo.file,handelProgess,(res: { data: { message: any; code: any; }; })=>{
+    fileUpload(uploadInfo.file,handelProgess,(res: { data: { message: string; code: number; }; })=>{
     uploadInfo.file.set('file','');
       const {message,code} = res.data
+      console.log(res.data);
       ElMessage({
         grouping: true,
         message: message,
         type: LOGIN_STATUS_MAP[code] as MessageStatus,
       })
-      // dialogVisible.value = false;
     })
 };
 const handleSubmit=()=>{

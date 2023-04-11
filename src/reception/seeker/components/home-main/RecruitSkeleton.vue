@@ -6,13 +6,7 @@ const { isLoading } = defineProps<{
 }>();
 </script>
 <template>
-  <el-skeleton
-    class="scroll-warp"
-    :loading="isLoading"
-    animated
-    :rows="1"
-    :throttle="100"
-  >
+  <el-skeleton class="scroll-warp" :loading="isLoading" animated :rows="1" :throttle="1">
     <template #template>
       <div v-for="item in 10">
         <el-skeleton-item :key="item" class="description" variant="h3" />

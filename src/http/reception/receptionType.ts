@@ -6,9 +6,10 @@ interface LoginType {
     password: string;
 }
 interface LoginRes extends axiosResponse {
-    readonly token?: string;
-    readonly message: string;
-    readonly nick_name?: string;
+    readonly nick_name: string;
+    readonly username:string;
+    readonly isRecommand:string;
+    readonly userNickName:string;
 }
 interface RegisteType extends LoginType{
     email:string;
@@ -43,7 +44,9 @@ interface RecommondCompanyInfo extends axiosResponse{
 //  修改账号
 
 interface UpdateType extends LoginType{
-    contactInfo:string,   
+    email?:string,
+    nickName?:string
+    newPassword?:string
 }
 /**
  * 文件获取
