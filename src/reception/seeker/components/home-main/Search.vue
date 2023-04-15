@@ -1,34 +1,29 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script lang="ts" setup>
-import { ref } from "vue";
 import { Search } from "@element-plus/icons-vue";
-import { regionData } from "@/reception/components/home-main/instance";
-const isList = ref<boolean>(true);
-const radio = ref<string>("");
-const inputContent = ref<string>("");
-// 被选择省份
-
-const select = (arg: any) => {
-  console.log(arg);
-};
+import RegionSelector from "@/reception/common/Region-selector.vue";
+import { useSearchStore } from "@/stores/seeker/search";
+const searchStore = useSearchStore();
 </script>
 <template>
   <el-card class="card-warp" body-style="margin:0">
     <div class="search-warp">
       <el-input
-        v-model="inputContent"
+        v-model="searchStore.searchInput"
+        @change="searchStore.handelInput"
         placeholder="请输入公司名称"
         class="input-with-select"
       >
         <template #prepend>
-          <el-cascader v-model="radio" :options="regionData" @change="select" />
+          <RegionSelector />
         </template>
         <template #append>
           <el-button :icon="Search" />
         </template>
       </el-input>
       <el-switch
-        v-model="isList"
+        v-model="searchStore.isList"
+        @change="searchStore.handelIsList"
         class="switch-content"
         inline-prompt
         active-text="已上市"

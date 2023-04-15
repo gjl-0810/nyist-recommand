@@ -3,12 +3,9 @@ import { NAV_KEY, TOKEN, USERNAME, USER_NICk_NAME, getValue, setValue } from "@/
 import { login } from "@/http/reception/account";
 import LoginDialog from './LoginDialog.vue'
 import type { LoginType } from "@/http/reception/receptionType";
-import router from "@/router";
-import { LOGIN_STATUS_MAP, type MessageStatus } from "@/utils/instance";
 import { ElMessage, type FormInstance } from "element-plus";
 import { reactive, ref } from "vue";
-
-
+import router from "@/router";
 const loginInstance = reactive<LoginType>({
   username: "",
   password: "",
@@ -19,6 +16,11 @@ const dialogInfo = {
   recommonder:'内推者',
   seekers:'求职者'
 }
+const elMessage =()=>ElMessage({
+          grouping: true,
+          type: 'success',
+          message: '登录成功',
+        })
 const dialogStatus = ref(false);
 const {tipMessage,recommonder,seekers} = dialogInfo
 const onLogin = (formEl: FormInstance | undefined) => {
@@ -26,11 +28,15 @@ const onLogin = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       login(loginInstance, (res) => {
-        const {token,username,userNickName} = res.data;
-        dialogStatus.value = !dialogStatus.value;
+        const {token,username,userNickName,isRecommand} = res.data;
         token&&setValue(TOKEN,token);
         setValue(USERNAME,username)
         setValue(USER_NICk_NAME,userNickName)
+        if(isRecommand)dialogStatus.value = !dialogStatus.value;
+        else{
+          router.push(getValue(NAV_KEY)||'rep/home')
+          elMessage();
+        }
       });
     } else {
       return false;
@@ -60,7 +66,12 @@ const onLogin = (formEl: FormInstance | undefined) => {
       required
       :rules="[{ required: true, type: 'string', message: '请填写密码' }]"
     >
-      <el-input v-model="loginInstance.password" placeholder="请输入密码" />
+      <el-input
+        type="password"
+        clearable
+        v-model="loginInstance.password"
+        placeholder="请输入密码"
+      />
     </el-form-item>
     <el-form-item>
       <el-button class="loginButton" type="primary" @click="onLogin(formRef)"
@@ -73,14 +84,7 @@ const onLogin = (formEl: FormInstance | undefined) => {
     :skip-seekers="seekers"
     :skip-recommonder="recommonder"
     :Tipmessage="tipMessage"
-    :success-cb="
-      () =>
-        ElMessage({
-          grouping: true,
-          type: 'success',
-          message: '登录成功',
-        })
-    "
+    :success-cb="elMessage"
   />
 </template>
 

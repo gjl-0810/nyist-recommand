@@ -1,10 +1,11 @@
+import { USER_NICk_NAME, getValue } from '@/cath';
 import { defineStore } from "pinia";
 
 export const useAccountInfoStore = defineStore("userInfo", {
   state: () => {
     return {
       email: '',
-      nickName:''
+      nickName:getValue(USER_NICk_NAME)||'',
     }
   },
   actions:{

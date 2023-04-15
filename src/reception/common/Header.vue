@@ -1,9 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { clearValue } from "@/cath";
+import { USER_NICk_NAME, clearValue, getValue } from "@/cath";
 import router from "@/router";
 import { ElMessage } from "element-plus";
 import { reactive, toRefs } from "vue";
+import { useAccountInfoStore } from "@/stores/accountInfo";
+const accountInfoStore = useAccountInfoStore();
 type headerDateType = {
   iconSrc: string;
   content: string;
@@ -14,7 +16,9 @@ const headerDate = reactive<headerDateType>({
 });
 const { iconSrc, content } = toRefs(headerDate);
 const handleCommand = (command: string | number | object) => {
+  clearValue();
   router.push("/login");
+  ElMessage({ type: "success", message: "已退出登录！" });
 };
 </script>
 <template>
@@ -22,9 +26,7 @@ const handleCommand = (command: string | number | object) => {
     <img :src="iconSrc" alt="图标" />
     <span>{{ content }}</span>
     <el-dropdown @command="handleCommand" class="dropMenu">
-      <el-avatar
-        src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-      />
+      <el-avatar class="avater">{{ accountInfoStore.nickName }}</el-avatar>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item command="legout">退出登录</el-dropdown-item>
@@ -41,5 +43,8 @@ const handleCommand = (command: string | number | object) => {
 }
 .dropMenu {
   cursor: pointer;
+  .avater {
+    background-color: #409eff;
+  }
 }
 </style>

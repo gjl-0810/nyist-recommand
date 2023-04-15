@@ -1,3 +1,16 @@
+<script lang="ts" setup>
+import { ref, reactive } from "vue";
+import { Calendar, Check, DArrowRight } from "@element-plus/icons-vue";
+import router from "@/router";
+import DeliveredResume from "./Delivered-resume.vue";
+import Delivering from "./Delivering.vue";
+import OfferedResume from "./Offered-resume.vue";
+
+const activeName = ref("deliverd");
+const tabChange = (name: string) => {
+  activeName.value = name;
+};
+</script>
 <template>
   <el-tabs
     type="border-card"
@@ -40,20 +53,6 @@
     </el-tab-pane>
   </el-tabs>
 </template>
-
-<script lang="ts" setup>
-import { ref, reactive } from "vue";
-import { Calendar, Check, DArrowRight } from "@element-plus/icons-vue";
-import router from "@/router";
-import DeliveredResume from "./Delivered-resume.vue";
-import Delivering from "./Delivering.vue";
-import OfferedResume from "./Offered-resume.vue";
-
-const activeName = ref("deliverd");
-const tabChange = (name: string) => {
-  activeName.value = name;
-};
-</script>
 <style lang="scss" scoped>
 .resume-tabs {
   width: 100%;

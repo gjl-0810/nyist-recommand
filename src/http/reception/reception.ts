@@ -14,7 +14,7 @@ import type { FuzzyType, LoginRes, LoginType, RecommondCompanyInfo, RegisteType,
         url:'/recommond/recommondInfoList',
         method:'post',
         data:{
-            companyName:data.companyName||'all',
+            companyName:data.companyName,
             pageSize:data.pageSize,
             pageNumber:data.pageNumber
         }

@@ -23,7 +23,7 @@ const changeStatus = () => {
             <el-row>
               <el-col :span="12" class="tip-center"><span>NYST-WR</span></el-col>
               <el-col :span="12" class="tip-center"
-                ><el-button type="success" link @click="changeStatus">{{
+                ><el-button type="success" text link @click="changeStatus">{{
                   contextPathMap[isLogin as keyof typeof contextPathMap].content
                 }}</el-button></el-col
               >

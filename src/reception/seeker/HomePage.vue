@@ -9,7 +9,9 @@ import Nav from "./common/Nav.vue";
     <Nav class="nav" />
     <main>
       <router-view v-slot="{ Component }">
-        <component :is="Component" />
+        <transition name="slide-fade">
+          <component :is="Component" />
+        </transition>
       </router-view>
     </main>
     <Footer class="footer" />
@@ -34,5 +36,19 @@ main {
 }
 .footer {
   height: 1.6rem;
+}
+// 动画组件
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }
 </style>

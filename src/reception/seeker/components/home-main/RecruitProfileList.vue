@@ -21,7 +21,7 @@ const isListMap = {
   2: { type: "danger", label: "未上市" },
 };
 const pageNumber = ref(0);
-const isLoading = ref(true);
+const isLoading = ref(false);
 const svg = `<path class="path" d="
           M 30 15
           L 28 17
@@ -80,7 +80,7 @@ defineExpose({
             <div class="description-item">
               <el-icon class="iconStyle"><Share /></el-icon>
               <label>推荐岗位：</label>
-              {{ item.internalPromotionPost }}
+              {{ item.recommondPosition }}
             </div>
             <div class="description-item">
               <el-icon class="iconStyle"><User /></el-icon> 招聘人数：{{ item.count }}
@@ -90,23 +90,34 @@ defineExpose({
         </template>
         <div class="description-content">
           <el-icon class="iconStyle"><Grid /></el-icon>
-          <label>公司简介：</label>
-          {{ item.companyProfile }}
+          <label>薪资范围</label>
+          {{ item.salary }}
         </div>
         <div class="description-content">
           <el-icon class="iconStyle"><Comment /></el-icon>
-          <label>招聘简介：</label>
-          {{ item.recommandInfo }}
+          <label>岗位简介：</label>
+          {{ item.jobDescription }}
         </div>
         <div class="description-content">
           <el-icon class="iconStyle"><Position /></el-icon>
           <label>工作地点：</label>
           {{ item.position }}
         </div>
-        <div class="description-content" v-if="item.contactInfo">
+        <div class="description-content">
           <el-icon class="iconStyle"><Connection /></el-icon>
-          <label>联系方式：</label>
-          {{ item.contactInfo }}
+          <label>截止日期</label>
+          {{ item.endDate }}
+        </div>
+        <!-- positionRecommonder -->
+        <div class="description-content" v-if="item.recommondPosition">
+          <el-icon class="iconStyle"><Connection /></el-icon>
+          <label>推荐者岗位</label>
+          {{ item.recommondPosition }}
+        </div>
+        <div class="description-content">
+          <el-icon class="iconStyle"><Connection /></el-icon>
+          <label>公司邮箱</label>
+          {{ item.email }}
         </div>
       </el-collapse-item>
       <scroll-bottom :status="Boolean(recommandList.length === total)"></scroll-bottom>

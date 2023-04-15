@@ -23,23 +23,23 @@ const router = createRouter({
       path: "/rep",
       name: "repHome",
       // 求职者首页
-      component: () => import("@/reception/views/HomePage.vue"),
+      component: () => import("@/reception/seeker/HomePage.vue"),
       children:[
         {
           path:'home',
-          component: () => import('@/reception/components/home-main/HomeMain.vue'),
+          component: () => import('@/reception/seeker/components/home-main/HomeMain.vue'),
         },
         {
           path:'resume',
-          component: () => import('@/reception/components/resume-main/ResumeMain.vue'),
+          component: () => import('@/reception/seeker/components/resume-main/ResumeMain.vue'),
         },
         {
           path:'personal',
-          component: () => import('@/reception/components/personal-main/Personal.vue'),
+          component: () => import('@/reception/seeker/components/personal-main/Personal.vue'),
           redirect:'/rep/personal/info',
           children:[
-            {path:'info',component:()=>import('@/reception/components/personal-main/personal-info/Personal-info.vue')},
-            {path:'deliverResume',component:()=>import('@/reception/components/personal-main/personal-deliver/Personal-deliver-resume.vue')},
+            {path:'info',component:()=>import('@/reception/seeker/components/personal-main/personal-info/Personal-info.vue')},
+            {path:'deliverResume',component:()=>import('@/reception/seeker/components/personal-main/personal-deliver/Personal-deliver-resume.vue')},
           ]
         },
         {
@@ -51,19 +51,19 @@ const router = createRouter({
     {
       path:"/recommond",
       name:'recommondHome',
-      component:()=> import ('@/reception/views/RecommondHome.vue'),
+      component:()=> import ('@/reception/recomond/RecommondHome.vue'),
       children:[
         {
           path:'home',
-          component:()=> import ('@/reception/views/RecommondHome.vue'),
+          component:()=> import ('@/reception/recomond/component/home/Home.vue'),
         },
         {
           path:'resume',
-          component:()=> import ('@/reception/views/RecommondHome.vue'),
+          component:()=> import ('@/reception/recomond/component/resume/Resume.vue'),
         },
         {
           path:'personal',
-          component: () => import('@/reception/components/personal-main/Personal.vue'),
+          component: () => import('@/reception/recomond/component/personal/Personal.vue'),
         }
       ]
     }

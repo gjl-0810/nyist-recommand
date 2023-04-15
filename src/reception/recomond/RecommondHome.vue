@@ -9,7 +9,9 @@ import ReNav from "./common/ReNav.vue";
     <ReNav class="nav" />
     <main>
       <router-view v-slot="{ Component }">
-        <component :is="Component" />
+        <transition name="slide-fade">
+          <component :is="Component" />
+        </transition>
       </router-view>
     </main>
     <Footer class="footer" />
@@ -23,7 +25,7 @@ import ReNav from "./common/ReNav.vue";
 }
 main {
   box-sizing: border-box;
-  height: 60rem;
+  height: 50rem;
 }
 .header {
   line-height: 2.6rem;
@@ -34,5 +36,19 @@ main {
 }
 .footer {
   height: 1.6rem;
+}
+// 动画组件
+.slide-fade-enter-active {
+  transition: all 1s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.6s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translate(10rem);
+  opacity: 0;
 }
 </style>

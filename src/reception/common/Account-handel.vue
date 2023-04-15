@@ -85,7 +85,13 @@ const handelUpdateEmail = (upEmail: FormInstance | undefined) => {
           required
           :rules="[{ required: true, type: 'string', message: '请填写原密码' }]"
         >
-          <el-input v-model="updateInfo.password" placeholder="请输入原密码" />
+          <el-input
+            type="password"
+            show-password
+            clearable
+            v-model="updateInfo.password"
+            placeholder="请输入原密码"
+          />
         </el-form-item>
         <el-form-item
           label="新密码"
@@ -93,16 +99,26 @@ const handelUpdateEmail = (upEmail: FormInstance | undefined) => {
           required
           :rules="[{ required: true, type: 'string', message: '请输入新密码' }]"
         >
-          <el-input v-model="updateInfo.newPassword" placeholder="请输入新密码" />
+          <el-input
+            type="password"
+            show-password
+            clearable
+            v-model="updateInfo.newPassword"
+            placeholder="请输入新密码"
+          />
         </el-form-item>
         <el-form-item
           label="新密码"
           prop="newPasswordCompelete"
+          type="password"
+          show-password
           required
           :rules="[{ required: true, type: 'string', message: '请再次输入新密码' }]"
         >
           <el-input
             v-model="updateInfo.newPasswordCompelete"
+            type="password"
+            clearable
             placeholder="请再次输入新密码"
           />
         </el-form-item>
@@ -136,7 +152,13 @@ const handelUpdateEmail = (upEmail: FormInstance | undefined) => {
           required
           :rules="[{ required: true, type: 'string', message: '请填写密码' }]"
         >
-          <el-input v-model="updateInfo.password" placeholder="请输入密码" />
+          <el-input
+            type="password"
+            clearable
+            show-password
+            v-model="updateInfo.password"
+            placeholder="请输入密码"
+          />
         </el-form-item>
         <el-form-item
           label="新昵称"
@@ -177,7 +199,12 @@ const handelUpdateEmail = (upEmail: FormInstance | undefined) => {
           trigger="blur"
           :rules="[{ required: true, type: 'string', message: '请填写密码' }]"
         >
-          <el-input v-model="updateInfo.password" placeholder="请输入密码" />
+          <el-input
+            v-model="updateInfo.password"
+            placeholder="请输入密码"
+            show-password
+            type="password"
+          />
         </el-form-item>
         <el-form-item
           label="新邮箱"

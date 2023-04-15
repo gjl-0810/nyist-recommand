@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Male } from "@element-plus/icons-vue";
+</script>
 <template>
   <div class="statistic" style="width: calc(80vw - 9rem)">
     <el-statistic title="已投递简历数量" :value="268500" />

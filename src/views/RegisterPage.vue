@@ -14,7 +14,7 @@ const formInline = reactive<RegisteType>({
   nickName:'',
   userContactInfo:''
 });
-const {  isRecommond } = formInline;
+
 const formRef = ref<FormInstance>();
 const onSubmit = (formRef:  FormInstance | undefined) => {
   if(!formRef) return;
@@ -43,6 +43,8 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
     <el-form-item
       label="密码"
       prop="password"
+      type="password"
+      clearable
       required
       :rules="[{ required: true, type: 'string', message: '请输入密码' }]"
     >
@@ -83,7 +85,7 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
 
     <el-form-item>
       <div class="status">
-        <el-radio-group v-model="isRecommond" v-for="radomItem in STATUS_MAP">
+        <el-radio-group v-model="formInline.isRecommond" v-for="radomItem in STATUS_MAP">
           <el-radio :label="radomItem.label" size="large">{{ radomItem.value }}</el-radio>
         </el-radio-group>
       </div>

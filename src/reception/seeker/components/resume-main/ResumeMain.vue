@@ -26,23 +26,25 @@ const pageChanga =  (size: number) => {
   pageChanga(1);
 </script>
 <template>
-  <ResumeSkeleton :is-loading="!Boolean(pdfFileInfo.base64String)">
-    <div class="resume-wrap" v-if="pdfFileInfo.base64String">
-      <resolvePdfVue
-        class="resolve-pdf"
-        :current-page="pdfFileInfo.currentPage"
-        :base64-string="pdfFileInfo.base64String"
-      />
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :page-size="1"
-        :total="5"
-        @current-change="pageChanga"
-        class="pdf-page"
-      />
-    </div>
-  </ResumeSkeleton>
+  <div>
+    <ResumeSkeleton :is-loading="!Boolean(pdfFileInfo.base64String)">
+      <div class="resume-wrap" v-if="pdfFileInfo.base64String">
+        <resolvePdfVue
+          class="resolve-pdf"
+          :current-page="pdfFileInfo.currentPage"
+          :base64-string="pdfFileInfo.base64String"
+        />
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :page-size="1"
+          :total="5"
+          @current-change="pageChanga"
+          class="pdf-page"
+        />
+      </div>
+    </ResumeSkeleton>
+  </div>
 </template>
 <style scoped lang="scss">
 .resume-wrap {

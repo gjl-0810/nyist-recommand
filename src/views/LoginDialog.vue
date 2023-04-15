@@ -31,14 +31,15 @@ const skipTo = (path: string) => {
   <el-dialog
     v-model="dialogInfo.dialogVisible"
     title="提示"
-    width="40rem"
     :before-close="handleClose"
+    center
+    align-center
   >
     <span>{{ skip.Tipmessage }}</span>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="skipTo('/recommond/home')">求职者</el-button>
-        <el-button type="primary" @click="skipTo('/rep/home')"> 内推者 </el-button>
+        <el-button type="primary" @click="skipTo('/rep/home')">求职者</el-button>
+        <el-button type="primary" @click="skipTo('/recommond/home')"> 内推者 </el-button>
       </span>
     </template>
   </el-dialog>

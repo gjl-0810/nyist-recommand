@@ -1,3 +1,4 @@
+import type { CascaderValue } from "element-plus/es/components/cascader-panel/src/types";
 import type { axiosResponse } from "../util/utilType";
 
 // 登录
@@ -8,7 +9,7 @@ interface LoginType {
 interface LoginRes extends axiosResponse {
     readonly nick_name: string;
     readonly username:string;
-    readonly isRecommand:string;
+    readonly isRecommand:boolean;
     readonly userNickName:string;
 }
 interface RegisteType extends LoginType{
@@ -22,19 +23,23 @@ interface FuzzyType {
   pageSize: number; 
   pageNumber: number; 
   companyName?: string; 
+  isList:number,
+  position:CascaderValue,
 }
 
 
 interface recommondInfo {
-    readonly  key:string,
-    readonly  isList:number,
-    readonly  count:number,
-    readonly  companyName:string,
-    readonly  position:string,
-    readonly  contactInfo:string,
-    readonly  recommandInfo:string,
-    readonly  internalPromotionPost:string,
-    readonly  companyProfile:string
+    key:string,
+    companyName: string, //公司名称
+    position: CascaderValue, //公司位置
+    jobDescription: string, //岗位描述
+    recommondPosition:string,//推荐岗位
+    count: number, //招聘人数
+    endDate: string, //招聘截止日期
+    email: string, //公司地址邮件
+    isList: number, //是否上市
+    salary: string, //薪资水平
+    positionRecommonder: string, //推荐者职位
 }
 interface RecommondCompanyInfo extends axiosResponse{
   readonly recommondInfo: recommondInfo[]

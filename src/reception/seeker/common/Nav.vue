@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script lang="ts" setup>
 import router from "@/router";
-import { ref, computed, onMounted, type DefineComponent } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { House, Document, User } from "@element-plus/icons-vue";
 import { NAV_KEY } from "@/cath";
