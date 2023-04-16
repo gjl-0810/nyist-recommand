@@ -39,18 +39,6 @@ const form = reactive({
   recommondPosition: formProps.recommondPosition || "", //推荐岗位
   positionRecommonder: formProps.positionRecommonder || "", //推荐者职位
 });
-const {
-  companyName,
-  position,
-  positionRecommonder,
-  jobDescription,
-  count,
-  endDate,
-  email,
-  isList,
-  recommondPosition,
-} = form;
-
 const handelNumber = (value: number) => {
   form.count = value;
 };
