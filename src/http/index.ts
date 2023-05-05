@@ -1,4 +1,4 @@
-import { clearValue, getValue,TOKEN } from "@/cath";
+import { clearValue, getValue,setValue,TOKEN } from "@/cath";
 import router from "@/router";
 import { arrayBufferToObj } from "@/utils/util";
 import axios, { AxiosError, type AxiosRequestConfig, type AxiosResponse }  from "axios";
@@ -15,12 +15,15 @@ function request(config: AxiosRequestConfig<any>,success: (arg0: AxiosResponse<a
         headers:{
             Authorization:`Bearer ${getValue(TOKEN)}`,
             'Content-Type':'application/x-www-form-urlencoded'
-        }      
+        }   
     });
     // 请求拦截
     
     // 响应拦截
     instance.interceptors.response.use(function fullfill(response:AxiosResponse) {
+        if(response.data&&response.data.token){
+            setValue(TOKEN,response.data.token)
+        }
         return response;
     },function rejected(err:AxiosError<any>) {
         // 状态码>2xx
@@ -29,11 +32,11 @@ function request(config: AxiosRequestConfig<any>,success: (arg0: AxiosResponse<a
         if(err.response&&err.response.data instanceof ArrayBuffer){
             err.response.data= {message:String(arrayBufferToObj(err.response.data))};
         }
-        if(err.response&&err.response.data.token===''){
+        else if(err.response&&err.response.data.token===''){
             clearValue();
             router.push('/login');
         }
-        if(err.code==='ERR_NETWORK'){
+        else if(err.code==='ERR_NETWORK'){
             err.message = '网络连接错误，请检查网络！'
         }
         return Promise.reject(err.response&&err.response.data||err);

@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { computed } from "@vue/reactivity";
-import { reactive, ref } from "@vue/runtime-dom";
+import { reactive, ref, toRaw, watch } from "@vue/runtime-dom";
 import { Edit, InfoFilled } from "@element-plus/icons-vue";
+import { TOKEN, USERNAME, getValue, setValue } from "@/cath";
+import { setpActiveMap } from "@/reception/common/constance";
+import type { CascaderValue } from "element-plus/es/components/cascader-panel/src/types";
+import { ElMessage } from "element-plus";
+import type { RecommondResumeInfoList } from "@/http/reception/resume/resumeType";
+import {
+  deleteResume,
+  getCompanyInfo,
+  getResumeInfoList,
+  updateResume,
+} from "@/http/reception/resume/resume";
+import { STEP_TO_STATUS } from "@/utils/instance";
 
-interface ResumeInfo {
-  startDate: string;
-  email: string;
-  resumeStatus: string;
-}
-const cascaderList = ref([
-  { value: "guide", label: "Guide" },
-  { value: "guide", label: "Guide" },
-  { value: "guide", label: "Guide" },
-  { value: "guide", label: "Guide" },
-]);
+const cascaderList = ref([] as { label: string; value: string }[]);
+const companyName = ref("");
 const setpActive = ref(1);
 // 直接结束
 const handelOver = () => {
@@ -25,27 +28,32 @@ const handelOver = () => {
 const handelNext = () => {
   setpActive.value++;
 };
+// 切换companyName
+// 按邮箱
 const search = ref("");
 const tableDate = reactive({
-  infoList: [
-    { startDate: "asdasd", email: "asdasd", resumeStatus: "asdasdasd" },
-    { startDate: "asdasd", email: "asdasd", resumeStatus: "asdasdasd" },
-    { startDate: "asdasd", email: "asdasd", resumeStatus: "asdasdasd" },
-    { startDate: "asdasd", email: "asdasd", resumeStatus: "asdasdasd" },
-  ] as ResumeInfo[],
+  infoList: [] as RecommondResumeInfoList[],
 });
 const filterTableData = computed(
   () =>
     tableDate.infoList.filter(
       (data) =>
-        !search.value || data.email.toLowerCase().includes(search.value.toLowerCase())
+        !search.value ||
+        data.deliverEmail.toLowerCase().includes(search.value.toLowerCase())
     )
   // toRaw(tableDate.infoList)
 );
+const total = ref(0);
 const pageInfo = reactive({
   currentPage: 1,
   pageSize: 10,
-  total: 0,
+});
+// 保存编辑，删除相关信息
+const editOrDeleteInfo = reactive({
+  deliverUsername: "",
+  deliverEmail: "", //投递者邮箱
+  username: "", //内推者账户
+  recommondPosition: "", //投递职位
 });
 const handelPageSize = (value: number) => {
   pageInfo.pageSize = value;
@@ -54,9 +62,82 @@ const handelCurrentPage = (value: number) => {
   pageInfo.currentPage = value;
 };
 // 删除
-const handleDelete = (index: number, row: ResumeInfo) => {};
-//编辑简历状态
-const handleEdit = (index: number, row: ResumeInfo) => {};
+const handleDelete = (index: number, row: RecommondResumeInfoList) => {
+  editOrDeleteInfo.deliverUsername = row.deliverUsername;
+  editOrDeleteInfo.deliverEmail = row.deliverEmail;
+  editOrDeleteInfo.username = row.username;
+  editOrDeleteInfo.recommondPosition = row.recommondPosition;
+  deleteResume(
+    {
+      deliverUsername: editOrDeleteInfo.deliverUsername,
+      deliverEmail: editOrDeleteInfo.deliverEmail,
+      username: editOrDeleteInfo.username,
+      recommondPosition: editOrDeleteInfo.recommondPosition,
+    },
+    (res) => {
+      const { message } = res.data;
+      ElMessage({ message, type: "success", grouping: true });
+      // 更新列表
+      getResumeInfo();
+    }
+  );
+};
+//编辑简历状态时
+const handleEdit = (index: number, row: RecommondResumeInfoList) => {
+  editOrDeleteInfo.deliverUsername = row.deliverUsername;
+  editOrDeleteInfo.deliverEmail = row.deliverEmail; //投递者邮箱
+  editOrDeleteInfo.username = row.username; //内推者账户
+  editOrDeleteInfo.recommondPosition = row.recommondPosition;
+  setpActive.value = Number(row.deliverStatus);
+};
+
+// 获取companyList
+getCompanyInfo({ username: getValue(USERNAME) }, (res) => {
+  res.data.companyList.forEach((index) => {
+    cascaderList.value.push({ label: index.companyName, value: index.companyName });
+  });
+});
+// 获取tableList
+const getResumeInfo = () => {
+  getResumeInfoList(
+    {
+      username: getValue(USERNAME),
+      companyName: companyName.value,
+      pagesize: pageInfo.pageSize,
+      currentPage: pageInfo.currentPage - 1,
+    },
+    (res) => {
+      const { message, resumeInfoList } = res.data;
+      total.value = res.data.total;
+      tableDate.infoList.length = 0;
+      tableDate.infoList.push(...resumeInfoList);
+      ElMessage({ message, type: "success", grouping: true });
+    }
+  );
+};
+getResumeInfo();
+// 简历列表
+watch([companyName, pageInfo], () => {
+  getResumeInfo();
+});
+
+// 简历状态更新
+watch(setpActive, () => {
+  updateResume(
+    {
+      deliverUsername: editOrDeleteInfo.deliverUsername,
+      deliverEmail: editOrDeleteInfo.deliverEmail,
+      username: editOrDeleteInfo.username,
+      recommondPosition: editOrDeleteInfo.recommondPosition,
+      deliverStatus: STEP_TO_STATUS[setpActive.value],
+    },
+    (res) => {
+      const { message } = res.data;
+      ElMessage({ message, type: "success", grouping: true });
+      getResumeInfo();
+    }
+  );
+});
 </script>
 <template>
   <el-table
@@ -71,16 +152,19 @@ const handleEdit = (index: number, row: ResumeInfo) => {};
       <template #header>
         公司名称：
         <el-cascader
+          clearable
           placeholder="请输入/选择公司名称"
           :options="cascaderList"
+          @change="(value:CascaderValue)=>{companyName=toRaw(value).toString()}"
           filterable
         />
       </template>
-      <el-table-column label="投递日期" prop="startDate" align="center" />
-      <el-table-column label="投递者邮箱" prop="email" align="center" />
-      <el-table-column label="简历状态" prop="resumeStatus" align="center">
+      <el-table-column label="投递日期" prop="date" align="center" />
+      <el-table-column label="投递者邮箱" prop="deliverEmail" align="center" />
+      <el-table-column label="投递职位" prop="recommondPosition" align="center" />
+      <el-table-column label="简历状态" prop="deliverStatus" align="center">
         <template #default="scope">
-          {{ scope.row.resumeStatus }}
+          {{ setpActiveMap[scope.row.deliverStatus] }}
           <el-popover :width="400" trigger="click">
             <template #reference>
               <el-icon
@@ -157,7 +241,7 @@ const handleEdit = (index: number, row: ResumeInfo) => {};
     @size-change="handelPageSize"
     @current-change="handelCurrentPage"
     :page-sizes="[10, 20, 30, 40, 50]"
-    :total="pageInfo.total"
+    :total="total"
   />
 </template>
 <style scoped lang="scss">

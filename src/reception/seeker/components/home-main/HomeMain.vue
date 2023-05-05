@@ -11,7 +11,6 @@ import { computed } from "@vue/reactivity";
 import { useSearchStore } from "@/stores/seeker/search";
 import { IS_LIST, getValue } from "@/cath";
 const searchStore = useSearchStore();
-const Recruit = ref(RecruitProfileList);
 const recommondInfoList = reactive({
   recommandList: [] as recommondInfo[],
   total: 0,
@@ -61,7 +60,6 @@ const isLoading = computed(() => !Boolean(recommondInfoList.recommandList.length
     <Search />
     <RecruitSkeleton :is-loading="isLoading">
       <RecruitProfileList
-        ref="Recruit"
         :recommand-list="recommondInfoList.recommandList"
         :total="recommondInfoList.total"
       />

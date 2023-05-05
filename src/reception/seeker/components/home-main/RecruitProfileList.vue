@@ -85,7 +85,13 @@ defineExpose({
             <div class="description-item">
               <el-icon class="iconStyle"><User /></el-icon> 招聘人数：{{ item.count }}
             </div>
-            <UpLoad />
+            <UpLoad
+              :username="item.username"
+              :recommond-position="item.recommondPosition"
+              :company-name="item.companyName"
+              :email="item.email"
+              :date="item.endDate"
+            />
           </div>
         </template>
         <div class="description-content">
@@ -108,7 +114,6 @@ defineExpose({
           <label>截止日期</label>
           {{ item.endDate }}
         </div>
-        <!-- positionRecommonder -->
         <div class="description-content" v-if="item.recommondPosition">
           <el-icon class="iconStyle"><Connection /></el-icon>
           <label>推荐者岗位</label>

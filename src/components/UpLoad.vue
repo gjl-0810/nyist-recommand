@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import { Plus } from "@element-plus/icons-vue";
-import { ElMessage, type UploadFile, type UploadFiles, type UploadInstance, type UploadProgressEvent, type UploadRawFile } from "element-plus";
-
-import type { UploadProps, UploadUserFile } from "element-plus";
-import { fileUpload } from "@/http/util/util";
+import { ElMessage } from "element-plus";
+import type { UploadProps, UploadUserFile, UploadInstance } from "element-plus";
 import { LOGIN_STATUS_MAP, type MessageStatus } from "@/utils/instance";
 import type { AxiosProgressEvent } from "axios";
 import { computed } from "@vue/reactivity";
+import { createResume } from "@/http/reception/resume/resume";
+import { EMAIL, USERNAME, getValue } from "@/cath";
 interface upLoadDialogType {
   title: string;
   cancel: string;
@@ -40,6 +40,15 @@ const {type}  = progressInfo
 const regFileType = new RegExp("application/pdf$", "i");
 const dialogVisible = ref(false);
 const isPercentage = computed(() => progressInfo.percentage)
+
+const props = defineProps<{
+  username:string,
+  recommondPosition: string,
+  companyName: string,
+  email: string,
+  date: string
+}>()
+
 // 文件类型，大小判断
 const handleChange: UploadProps["onChange"] = (uploadFile) => {
   if (!regFileType.test(uploadFile.raw?.type as string)) {
@@ -57,12 +66,25 @@ const handleChange: UploadProps["onChange"] = (uploadFile) => {
 const handleCancel = (e: Event) => {
   dialogVisible.value = false;
 };
+const handelProgess = (progressEvent: AxiosProgressEvent) :void =>{
+  if(progressEvent.total){
+    progressInfo.percentage = Math.round( (progressEvent.loaded * 100) / progressEvent.total  );
+  }
+}
 const handleConfirm = (params: { file: File; }) => {
-    uploadInfo.file.set('file',params.file,encodeURIComponent(params.file.name));
-    fileUpload(uploadInfo.file,handelProgess,(res: { data: { message: string; code: number; }; })=>{
-    uploadInfo.file.set('file','');
+    //pdf文件
+    uploadInfo.file.set('resume',params.file,encodeURIComponent(params.file.name));
+    uploadInfo.file.set('deliverUsername',getValue(USERNAME));
+    uploadInfo.file.set('deliverEmail',getValue(EMAIL));
+    uploadInfo.file.set('username',props.username);
+    uploadInfo.file.set('recommondPosition',props.recommondPosition);
+    uploadInfo.file.set('companyName',props.companyName);
+    uploadInfo.file.set('email',props.email);
+    uploadInfo.file.set('date',props.date);
+    uploadInfo.file.set('deliverStatus','已投递');
+    createResume(uploadInfo.file,handelProgess,res=>{
+      uploadInfo.file.set('resume','');
       const {message,code} = res.data
-      console.log(res.data);
       ElMessage({
         grouping: true,
         message: message,
@@ -87,11 +109,8 @@ const handelRemove = () => {
 const handelDialog = () => {
   dialogVisible.value = true;
 };
-const handelProgess = (progressEvent: AxiosProgressEvent) :void =>{
-  if(progressEvent.total){
-    progressInfo.percentage = Math.round( (progressEvent.loaded * 100) / progressEvent.total  );
-  }
-}
+
+
 /**
  * 阻止事件传递
  * @param e

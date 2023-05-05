@@ -1,6 +1,6 @@
 import type { AxiosResponse } from "axios"
 import type { LoginRes, LoginType, RegisteType, UpdateType } from "./receptionType"
-import type { axiosResponse } from "../util/utilType"
+import type { Status } from "../util/utilType"
 import { request } from ".."
 
 // 登录
@@ -16,7 +16,7 @@ function login(data: LoginType,res: (res: AxiosResponse<LoginRes, any>) => void)
 }
 //  注册
 function registe({username,password,isRecommond,email,userContactInfo,nickName}: RegisteType,
-res: (res:AxiosResponse<axiosResponse, any>) => void){
+res: (res:AxiosResponse<Status, any>) => void){
 request({
     url:'user/registe',
     method:'post',

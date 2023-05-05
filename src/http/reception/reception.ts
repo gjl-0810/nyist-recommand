@@ -1,8 +1,7 @@
 import type { AxiosResponse } from "axios";
 
 import { request } from "..";
-import type { axiosResponse } from "../util/utilType";
-import type { FuzzyType, LoginRes, LoginType, RecommondCompanyInfo, RegisteType, UpdateType, padFileResponse } from "./receptionType";
+import type { FuzzyType,RecommondCompanyInfo, padFileResponse } from "./receptionType";
 
 /**
  * 查找公司
@@ -13,11 +12,7 @@ import type { FuzzyType, LoginRes, LoginType, RecommondCompanyInfo, RegisteType,
     request({
         url:'/recommond/recommondInfoList',
         method:'post',
-        data:{
-            companyName:data.companyName,
-            pageSize:data.pageSize,
-            pageNumber:data.pageNumber
-        }
+        data
     },res)
 }
 /**

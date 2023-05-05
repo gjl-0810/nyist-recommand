@@ -25,5 +25,11 @@ const STATUS_MAP = [
     { label: 0, value: STATUS_JOB},
     { label: 1, value: STATUS_RECOMMOD},
 ]
-export { LOGIN_STATUS_MAP, STATUS_MAP };
+const STEP_TO_STATUS:{[index:number]:string}={
+    1:'已投递',
+    2:'面试中',
+    3:'offer',
+    4:'结束',
+}
+export { LOGIN_STATUS_MAP, STATUS_MAP, STEP_TO_STATUS };
 export type { STATUS_MAP_TYPE, MessageStatus };

@@ -1,4 +1,3 @@
-import type { axiosResponse } from '@/http/util/utilType';
 
 function testApi<T> ( time:number, data:T) :Promise<T>  {
     return new Promise<T>((resolve) => {
@@ -20,7 +19,7 @@ function arrayBufferToObj(source:ArrayBuffer,type?:string) {
 
     // 读取 JSON 数据并转换成 JavaScript 对象
     const jsonString = decoder.decode(dataView);
-    return JSON.parse(jsonString) as axiosResponse;
+    return JSON.parse(jsonString) as Object;
 }
 
   

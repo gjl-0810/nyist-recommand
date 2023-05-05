@@ -28,8 +28,7 @@ const onLogin = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       login(loginInstance, (res) => {
-        const {token,username,userNickName,isRecommand} = res.data;
-        token&&setValue(TOKEN,token);
+        const {username,userNickName,isRecommand} = res.data;
         setValue(USERNAME,username)
         setValue(USER_NICk_NAME,userNickName)
         if(isRecommand)dialogStatus.value = !dialogStatus.value;

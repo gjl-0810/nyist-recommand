@@ -28,8 +28,8 @@ onMounted(() => {
     accountInfo.contact = contact;
     accountInfo.username = username;
     accountInfo.isRecommond = isRecommond;
-    accountInfoStore.email = email;
-    accountInfoStore.nickName = nickName;
+    accountInfoStore.handelEmail(email);
+    accountInfoStore.handelNickName(nickName);
   });
 });
 </script>

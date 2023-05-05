@@ -66,8 +66,45 @@ const router = createRouter({
           component: () => import('@/reception/recomond/component/personal/Personal.vue'),
         }
       ]
-    }
-  
+    },
+  // 管理后台
+    {
+        path:'/adminLogin',
+        name:'adminLogin',
+        component: () => import('@/views/ManageLogin.vue'),
+    },
+    {
+      path:'/manage',
+      name:'manage',
+      component: () => import('@/ManageStage/Home.vue'),
+      children:[
+        {
+          path:'statistic',
+          name:'statistic',
+          component: () => import('@/ManageStage/views/statistic/Statistic.vue'),
+        },
+        {
+          path:'internalTempelete',
+          name:'internalTempelete',
+          component: () => import('@/ManageStage/views/internal_templete/InternalTemplete.vue'),
+        },
+        {
+          path:'recommondList',
+          name:'recommondList',
+          component: () => import('@/ManageStage/views/recommond_list/RecommondList.vue'),
+        },
+        {
+          path:'resumeList',
+          name:'resumeList',
+          component: () => import('@/ManageStage/views/resume_list/ResumeList.vue'),
+        },
+        {
+          path:'userList',
+          name:'userList',
+          component: () => import('@/ManageStage/views/user_list/UserList.vue'),
+        },
+      ]
+  },
   ],
 });
 // router.beforeEach(async (to, from) => {

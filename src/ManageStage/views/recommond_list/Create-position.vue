@@ -7,8 +7,8 @@ import { computed, toRaw } from "@vue/reactivity";
 import dayjs from "dayjs";
 import { createPosition, editPosition } from "@/http/reception/recepRecommond";
 import { ElMessage } from "element-plus";
-import { TOKEN, USERNAME, getValue, setValue } from "@/cath";
-import { fromPairs } from "lodash";
+import { ADMIN_USER_NAME, USERNAME, getValue } from "@/cath";
+import { adminCreatePosition } from "@/http/back/recommond/recommond";
 const positionRef = ref<FormInstance>();
 /**编辑 */
 const formProps = defineProps<{
@@ -25,6 +25,7 @@ const formProps = defineProps<{
   toSalary?: number; //薪资终点
   recommondPosition?: string; //推荐岗位
   positionRecommonder?: string; //推荐者职位
+  username?: string; //推荐者账号
 }>();
 const form = reactive({
   companyName: formProps.companyName || "", //公司名称
@@ -38,6 +39,7 @@ const form = reactive({
   toSalary: formProps.toSalary || 1, //薪资终点
   recommondPosition: formProps.recommondPosition || "", //推荐岗位
   positionRecommonder: formProps.positionRecommonder || "", //推荐者职位
+  username: formProps.username || "", //推荐者账号
 });
 const handelNumber = (value: number) => {
   form.count = value;
@@ -96,29 +98,30 @@ const disableDate = (date: Date) => {
  */
 const handleSubmit = (formValidate: FormInstance | undefined) => {
   if (!formValidate) return;
-  formValidate.validate(() => {
-    createPosition(
-      {
-        companyName: form.companyName,
-        position: form.position,
-        positionRecommonder: form.positionRecommonder,
-        recommondPosition: form.recommondPosition,
-        recruitmentStatus: "招聘中",
-        count: form.count,
-        endDate: form.endDate,
-        email: form.email,
-        isList: form.isList,
-        salary: arrangeSalary.value,
-        jobDescription: form.jobDescription,
-        startDate: now,
-        username: getValue(USERNAME),
-      },
-      (res) => {
-        const { message } = res.data;
-        ElMessage({ message, type: "success", grouping: true });
-        formProps.handelclose();
-      }
-    );
+  formValidate.validate((validate) => {
+    if (validate)
+      adminCreatePosition(
+        {
+          companyName: form.companyName,
+          position: form.position,
+          positionRecommonder: form.positionRecommonder,
+          recommondPosition: form.recommondPosition,
+          recruitmentStatus: "招聘中",
+          count: form.count,
+          endDate: form.endDate,
+          email: form.email,
+          isList: form.isList,
+          salary: arrangeSalary.value,
+          jobDescription: form.jobDescription,
+          startDate: now,
+          username: getValue(ADMIN_USER_NAME),
+        },
+        (res) => {
+          const { message } = res.data;
+          ElMessage({ message, type: "success", grouping: true });
+          formProps.handelclose();
+        }
+      );
   });
   // 提交表单
   //关闭dialog
@@ -126,29 +129,31 @@ const handleSubmit = (formValidate: FormInstance | undefined) => {
 /**编辑表单 */
 const edit = (formValidate: FormInstance | undefined) => {
   if (!formValidate) return;
-  formValidate.validate(() => {
-    editPosition(
-      {
-        companyName: form.companyName,
-        position: form.position,
-        positionRecommonder: form.positionRecommonder,
-        recommondPosition: form.recommondPosition,
-        recruitmentStatus: "招聘中",
-        count: form.count,
-        endDate: form.endDate,
-        email: form.email,
-        isList: form.isList,
-        salary: arrangeSalary.value,
-        jobDescription: form.jobDescription,
-        startDate: now,
-        username: getValue(USERNAME),
-      },
-      (res) => {
-        const { message } = res.data;
-        ElMessage({ message, type: "success", grouping: true });
-        formProps.handelclose();
-      }
-    );
+  formValidate.validate((validate) => {
+    if (validate) {
+      editPosition(
+        {
+          companyName: form.companyName,
+          position: form.position,
+          positionRecommonder: form.positionRecommonder,
+          recommondPosition: form.recommondPosition,
+          recruitmentStatus: "招聘中",
+          count: form.count,
+          endDate: form.endDate,
+          email: form.email,
+          isList: form.isList,
+          salary: arrangeSalary.value,
+          jobDescription: form.jobDescription,
+          startDate: now,
+          username: form.username,
+        },
+        (res) => {
+          const { message } = res.data;
+          ElMessage({ message, type: "success", grouping: true });
+          formProps.handelclose();
+        }
+      );
+    }
   });
 };
 const isEdit = computed(() => Boolean(formProps.companyName));

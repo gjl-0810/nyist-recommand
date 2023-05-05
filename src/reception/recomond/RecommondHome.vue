@@ -39,7 +39,7 @@ main {
 }
 // 动画组件
 .slide-fade-enter-active {
-  transition: all 1s ease-out;
+  transition: all 2s ease-out;
 }
 
 .slide-fade-leave-active {

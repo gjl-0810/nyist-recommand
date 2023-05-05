@@ -24,8 +24,9 @@ const updateInfo = reactive({
 const {newPassword,newPasswordCompelete} = updateInfo
 const handeluPdatePassword = (upPassword: FormInstance | undefined) => {
   if (!upPassword) return;
-  upPassword.validate(()=>{
-    if(newPassword!==newPasswordCompelete){
+  upPassword.validate((validate)=>{
+    if(validate){
+      if(newPassword!==newPasswordCompelete){
       ElMessageBox({message:'两次密码不相同'})
     }
     else
@@ -36,30 +37,37 @@ const handeluPdatePassword = (upPassword: FormInstance | undefined) => {
       ElMessage.success({message:res.data.message})
       // 清除缓存，重新登录
     })
+    }
+
   })
 };
 const handelUpdateNickName = (upNickName: FormInstance | undefined) => {
   if (!upNickName) return;
-  upNickName.validate(()=>{
-    // 进行网络请求
+  upNickName.validate((validate)=>{
+    if(validate){
+      // 进行网络请求
     updateNickName({password:updateInfo.password,username:getValue(USERNAME),
     nickName:updateInfo.nickName},res=>{
       const {nickName,message} = res.data;
       ElMessage.success({message})
       accountInfoStore.handelNickName(nickName);
     })
+    }
+
   })
 };
 const handelUpdateEmail = (upEmail: FormInstance | undefined) => {
   if (!upEmail) return;
-  upEmail.validate(()=>{
-    // 进行网络请求
+  upEmail.validate((validate)=>{
+    if(validate){
+        // 进行网络请求
     updateEmail({password:updateInfo.password,username:getValue(USERNAME),
     email:updateInfo.email},res=>{
       const {email,message} = res.data;
       ElMessage.success({message})
       accountInfoStore.handelEmail(email);
     })
+    }
   })
 };
 </script>

@@ -1,8 +1,8 @@
 import type { AxiosProgressEvent, AxiosResponse } from "axios";
 import { request } from "..";
-import type { axiosResponse } from "./utilType";
+import type { Status } from "./utilType";
 
-function fileUpload(file:FormData,uploadProgess:(progressEvent: AxiosProgressEvent) => void ,res: (res: AxiosResponse<axiosResponse, any
+function fileUpload(file:FormData,uploadProgess:(progressEvent: AxiosProgressEvent) => void ,res: (res: AxiosResponse<Status, any
     >) => void) {
     request(
         {
