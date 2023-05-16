@@ -9,7 +9,6 @@ import 'element-plus/theme-chalk/el-loading.css';
 import 'element-plus/theme-chalk/el-message.css';
 const pinia = createPinia()
 const app = createApp(App);
-
 app.use(ElCascader).use(pinia);
 app.use(router);
 

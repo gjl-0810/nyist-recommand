@@ -84,7 +84,8 @@ const handleConfirm = (params: { file: File; }) => {
     uploadInfo.file.set('deliverStatus','已投递');
     createResume(uploadInfo.file,handelProgess,res=>{
       uploadInfo.file.set('resume','');
-      const {message,code} = res.data
+      const {message,code} = res.data;
+      dialogVisible.value= !dialogVisible.value;
       ElMessage({
         grouping: true,
         message: message,

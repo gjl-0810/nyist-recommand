@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { registe } from "@/http/reception/account";
 import type { RegisteType } from "@/http/reception/receptionType";
+import { getRegisteCheckCode } from "@/http/reception/util/util";
 import router from "@/router";
 import { STATUS_MAP } from "@/utils/instance";
+import { createWebSocket, sendSock } from "@/websocket";
 import { ElMessage, type FormInstance } from "element-plus";
 import { reactive, ref } from "vue";
-
+createWebSocket(null,()=>{});
 const formInline = reactive<RegisteType>({
   username: "",
   password: "",
+  newPassword:'',
+  checkCode:'',
   email: "",
   isRecommond: 0,
   nickName:'',
-  userContactInfo:''
 });
 
 const formRef = ref<FormInstance>();
@@ -20,14 +23,26 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
   if(!formRef) return;
   formRef.validate((valid) => {
     if(valid){
-      registe(formInline,
+      if(formInline.password!==formInline.newPassword){
+        ElMessage.error({message:"两次密码不同，请核查！"})
+      }
+      else{
+        registe(formInline,
           res=>{
             ElMessage.success(res.data.message)
-            router.push('/login')
+            router.push('/login');
+            sendSock('as')
       })
+      }
     }else
     return false;
   })
+}
+// 获取验证码
+const handelGetCheckCode = ()=>{
+  getRegisteCheckCode({ email: formInline.email }, (res) => {
+      ElMessage.success({ message: res.data.message });
+    });
 }
 </script>
 <template>
@@ -36,25 +51,42 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
       label="账号"
       prop="username"
       required
-      :rules="[{ required: true, type: 'string', message: '请输入学号' }]"
+      :rules="[{ required: true, type: 'any', message: '请输入学号' }]"
     >
       <el-input v-model="formInline.username" type="string" placeholder="请输入学号" />
     </el-form-item>
     <el-form-item
       label="密码"
       prop="password"
-      type="password"
+      required
+      :rules="[{ required: true, type: 'any', message: '请输入密码' }]"
+    >
+      <el-input
+        type="password"
+        clearable
+        v-model="formInline.password"
+        placeholder="请输入密码"
+      />
+    </el-form-item>
+    <el-form-item
+      label="新密码"
+      prop="newPassword"
       clearable
       required
-      :rules="[{ required: true, type: 'string', message: '请输入密码' }]"
+      :rules="[{ required: true, type: 'any', message: '请输入合法密码' }]"
     >
-      <el-input v-model="formInline.password" placeholder="请输入密码" />
+      <el-input
+        type="password"
+        clearable
+        v-model="formInline.newPassword"
+        placeholder="请输入新密码"
+      />
     </el-form-item>
     <el-form-item
       label="邮箱"
       prop="email"
       required
-      :rules="[{ required: true, type: 'string', message: '请填写邮箱' }]"
+      :rules="[{ required: true, type: 'email', message: '请填写邮箱' }]"
     >
       <el-input
         v-model="formInline.email"
@@ -63,24 +95,27 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
       />
     </el-form-item>
     <el-form-item
+      label="验证码"
+      prop="checkCode"
+      clearable
+      required
+      :rules="[{ required: true, type: 'any', message: '请输入合法验证码' }]"
+    >
+      <el-input
+        style="width: 71%"
+        v-model="formInline.checkCode"
+        placeholder="请输入验证码"
+      />
+      <el-button @click="handelGetCheckCode">验证码</el-button>
+    </el-form-item>
+
+    <el-form-item
       label="昵称"
       prop="nickName"
       required
       :rules="[{ required: true, type: 'string', message: '请填写昵称' }]"
     >
       <el-input v-model="formInline.nickName" type="email" placeholder="请填写昵称" />
-    </el-form-item>
-    <el-form-item
-      label="联系方式"
-      prop="userContactInfo"
-      required
-      :rules="[{ required: true, type: 'string', message: '请填写联系方式' }]"
-    >
-      <el-input
-        v-model="formInline.userContactInfo"
-        type="email"
-        placeholder="请填写联系方式"
-      />
     </el-form-item>
 
     <el-form-item>
@@ -95,6 +130,9 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
         >注册</el-button
       >
     </el-form-item>
+    <div class="handel-exchange">
+      <el-link type="success" @click="router.push('/login')">已有账号，去登录</el-link>
+    </div>
   </el-form>
 </template>
 
@@ -105,12 +143,17 @@ const onSubmit = (formRef:  FormInstance | undefined) => {
 
 .registerButton {
   margin: 0 auto;
-  width: 10rem;
+  width: 15rem;
 }
 .status {
   width: 20rem;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
+}
+.handel-exchange {
+  width: 100%;
+  display: flex;
+  justify-content: end;
 }
 </style>

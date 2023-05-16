@@ -25,7 +25,7 @@ import Nav from "./common/Nav.vue";
 }
 main {
   box-sizing: border-box;
-  height: 60rem;
+  min-height: 40rem;
 }
 .header {
   line-height: 2.6rem;

@@ -179,11 +179,11 @@ const handelDialog = () => {
     <el-table-column label="已创建公司">
       <template #header>
         <span>
-          创建者账号：
+          内推者账号：
           <el-cascader
             v-model="searchUsername"
             clearable
-            placeholder="请输入/选择公司名称"
+            placeholder="请输入/选择内推者账号"
             :options="cascaderList.userList"
             @change="(value:CascaderValue)=>handelUsername(value)"
             filterable
@@ -194,7 +194,7 @@ const handelDialog = () => {
           <el-cascader
             clearable
             v-model="searchRecommondPosition"
-            placeholder="请输入/选择职位"
+            placeholder="请输入/选择职位位置"
             :options="cascaderList.resumePositionList"
             @change="(value:CascaderValue)=>handelRecommondPosition(value)"
             filterable
@@ -219,9 +219,17 @@ const handelDialog = () => {
           <el-button size="small" type="warning" @click="handleEdit(scope.row)"
             >编辑</el-button
           >
-          <el-button size="small" type="danger" @click="handleDelete(scope.row)"
-            >删除</el-button
+          <el-popconfirm
+            confirm-button-text="是"
+            cancel-button-text="否"
+            icon-color="#626AEF"
+            title="确认删除?"
+            @confirm="handleDelete(scope.row)"
           >
+            <template #reference>
+              <el-button size="small" type="danger">删除</el-button>
+            </template>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table-column>

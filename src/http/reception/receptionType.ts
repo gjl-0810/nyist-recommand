@@ -15,7 +15,8 @@ interface RegisteType extends LoginType{
     readonly email:string;
     readonly isRecommond: number;
     readonly nickName:string;
-    readonly userContactInfo:string;
+    readonly checkCode: string;
+    readonly newPassword: string;
 }
 //模糊查询公司
 interface FuzzyType {

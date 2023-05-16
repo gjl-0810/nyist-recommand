@@ -1,5 +1,5 @@
 import { request } from "@/http"
-import type { AdminDeleteUser, AdminGetUserList, AdminLogin, AdminUpdateEmail, AdminUpdatePwd, AdminUpdateUserNickName, AdminUpdateUserPwd, ResAdminDeleteUser, ResAdminGetUserList, ResAdminLogin, ResAdminUpdateEmail, ResAdminUpdatePwd, ResAdminUpdateUserNickName, ResAdminUpdateUserPwd } from "./accountType"
+import type { AdminDeleteUser, AdminGetCheckCode, AdminGetUserList, AdminLogin, AdminUnLoginUpdatePwd, AdminUpdateEmail, AdminUpdatePwd, AdminUpdateUserNickName, AdminUpdateUserPwd, ResAdminDeleteUser, ResAdminGetCheckCode, ResAdminGetUserList, ResAdminLogin, ResAdminUnLoginUpdatePwd, ResAdminUpdateEmail, ResAdminUpdatePwd, ResAdminUpdateUserNickName, ResAdminUpdateUserPwd } from "./accountType"
 import type { AxiosResponse } from "axios"
 
 //  管理员登录
@@ -61,7 +61,22 @@ function getUserList(data:AdminGetUserList,res: (res:AxiosResponse<ResAdminGetUs
         params:data
     },res)
 }
-
+// 获取验证码 未登录修改密码
+function adminGetCheckCode(data:AdminGetCheckCode,res: (res:AxiosResponse<ResAdminGetCheckCode, any>) => void){
+    request({
+        url:'/user/adminGetCheckCode',
+        method:'get',
+        params:data
+    },res)
+}
+/**修改密码 无登录*/
+function adminUnLoginUpdatePwd(data: AdminUnLoginUpdatePwd,res: (res: AxiosResponse<ResAdminUnLoginUpdatePwd, any>) => void){
+    request({
+        url:'user/adminUnLoginUpdatePwd',
+        method:'put',
+        data
+    },res)
+}
 export{
     adminLogin,
     adminUpdatePwd,
@@ -69,5 +84,7 @@ export{
     adminUpdateUserNickName,
     adminUpdateUserEmail,
     adminDeleteUser,
-    getUserList
+    getUserList,
+    adminGetCheckCode,
+    adminUnLoginUpdatePwd
 }

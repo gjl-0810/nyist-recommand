@@ -5,8 +5,6 @@ import AccountHandel from "@/reception/common/Account-handel.vue";
 </script>
 <template>
   <el-card class="personal-info">
-    <StatisticVue />
-    <el-divider />
     <DescribeVue />
     <el-divider />
     <Account-handel />

@@ -13,7 +13,7 @@ import {
   getResumeInfoList,
   updateResume,
 } from "@/http/reception/resume/resume";
-import { STEP_TO_STATUS } from "@/utils/instance";
+import { STEP_TO_STATUS, TO_STATUS } from "@/utils/instance";
 
 const cascaderList = ref([] as { label: string; value: string }[]);
 const companyName = ref("");
@@ -88,7 +88,7 @@ const handleEdit = (index: number, row: RecommondResumeInfoList) => {
   editOrDeleteInfo.deliverEmail = row.deliverEmail; //投递者邮箱
   editOrDeleteInfo.username = row.username; //内推者账户
   editOrDeleteInfo.recommondPosition = row.recommondPosition;
-  setpActive.value = Number(row.deliverStatus);
+  setpActive.value = STEP_TO_STATUS[row.deliverStatus];
 };
 
 // 获取companyList
@@ -129,7 +129,7 @@ watch(setpActive, () => {
       deliverEmail: editOrDeleteInfo.deliverEmail,
       username: editOrDeleteInfo.username,
       recommondPosition: editOrDeleteInfo.recommondPosition,
-      deliverStatus: STEP_TO_STATUS[setpActive.value],
+      deliverStatus: TO_STATUS[setpActive.value] || "结束",
     },
     (res) => {
       const { message } = res.data;
@@ -164,7 +164,7 @@ watch(setpActive, () => {
       <el-table-column label="投递职位" prop="recommondPosition" align="center" />
       <el-table-column label="简历状态" prop="deliverStatus" align="center">
         <template #default="scope">
-          {{ setpActiveMap[scope.row.deliverStatus] }}
+          {{ scope.row.deliverStatus }}
           <el-popover :width="400" trigger="click">
             <template #reference>
               <el-icon

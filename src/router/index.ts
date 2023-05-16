@@ -1,3 +1,5 @@
+import { TOKEN } from './../cath/index';
+import { getValue } from '@/cath';
 import { createRouter, createWebHistory } from "vue-router";
 import loginOrRegisterVue from "@/views/LoginOrRegister.vue";
 
@@ -12,6 +14,7 @@ const router = createRouter({
       children:[ 
         {
         path:'login',
+        name:'login',
         component: () => import('@/views/LoginPage.vue'),
       },
       {
@@ -107,12 +110,5 @@ const router = createRouter({
   },
   ],
 });
-// router.beforeEach(async (to, from) => {
-//   const isLogin = localStorage.getItem('login');
-//   // 路由跳转之前判断登录状态
-//   if (!isLogin && to.name!=='login') {
-//     // 未登录将用户重定向到登录页面
-//     return { name: 'login' }
-//   }
-// })
+
 export default router;

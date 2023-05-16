@@ -1,41 +1,20 @@
-<script setup lang="ts">
-import router from "@/router";
-import { reactive, ref } from "vue";
-
-const isLogin = ref<number>(0);
-const contextPathMap = reactive({
-  0: { path: "/login", content: "登录" },
-  1: { path: "/registe", content: "注册" },
-});
-// 修改显示组件
-const changeStatus = () => {
-  isLogin.value = isLogin.value === 0 ? 1 : 0;
-  router.push(contextPathMap[isLogin.value as keyof typeof contextPathMap].path);
-};
-</script>
+<script setup lang="ts"></script>
 <template>
   <main>
-    <el-card>
-      <el-row class="cardPage">
-        <el-col :span="12"><img src="@/assets/logo.svg" alt="logo" /></el-col>
-        <el-col :span="12">
-          <div>
-            <el-row>
-              <el-col :span="12" class="tip-center"><span>NYST-WR</span></el-col>
-              <el-col :span="12" class="tip-center"
-                ><el-button type="success" text link @click="changeStatus">{{
-                  contextPathMap[isLogin as keyof typeof contextPathMap].content
-                }}</el-button></el-col
-              >
-            </el-row>
-            <router-view v-slot="{ Component }">
+    <el-card style="width: 45rem">
+      <div class="cardPage">
+        <img class="img" src="@/assets/logo.svg" alt="logo" />
+        <div style="width: 20rem">
+          <h1 class="headerTip">NYIST-WR</h1>
+          <router-view v-slot="{ Component }">
+            <transition name="slide-fade">
               <keep-alive>
                 <component :is="Component" />
               </keep-alive>
-            </router-view>
-          </div>
-        </el-col>
-      </el-row>
+            </transition>
+          </router-view>
+        </div>
+      </div>
     </el-card>
   </main>
 </template>
@@ -46,25 +25,29 @@ const changeStatus = () => {
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  img {
-    width: 20rem;
-    height: 20rem;
-  }
-  .login-register-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  box-sizing: border-box;
+  width: 43rem;
 }
-.tip-center {
-  display: flex;
-  justify-content: center;
-  span {
-    font-size: 1.2rem;
-  }
-  button {
-    font-size: 1.5rem;
-  }
+.img {
+  width: 20rem;
+  height: 20rem;
+}
+.headerTip {
+  box-sizing: border-box;
+  text-align: center;
+}
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(-50px);
+  opacity: 0;
 }
 // @media (max){
 

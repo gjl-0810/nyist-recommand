@@ -5,13 +5,14 @@ import router from "@/router";
 import { ElMessage } from "element-plus";
 import { reactive, toRefs } from "vue";
 import { useAccountInfoStore } from "@/stores/accountInfo";
+const imgUrl = new URL("@/assets/logo.svg", import.meta.url).href;
 const accountInfoStore = useAccountInfoStore();
 type headerDateType = {
   iconSrc: string;
   content: string;
 };
 const headerDate = reactive<headerDateType>({
-  iconSrc: "",
+  iconSrc: imgUrl,
   content: "南阳理工微软工作室内推系统",
 });
 const { iconSrc, content } = toRefs(headerDate);
@@ -23,10 +24,10 @@ const handleCommand = (command: string | number | object) => {
 </script>
 <template>
   <header class="header">
-    <img :src="iconSrc" alt="图标" />
+    <img :src="imgUrl" alt="图标" />
     <span>{{ content }}</span>
     <el-dropdown @command="handleCommand" class="dropMenu">
-      <el-avatar class="avater">{{ accountInfoStore.nickName }}</el-avatar>
+      <el-avatar class="avater">{{ accountInfoStore.nickName.slice(0, 3) }}</el-avatar>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item command="legout">退出登录</el-dropdown-item>
