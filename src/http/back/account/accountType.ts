@@ -90,8 +90,20 @@ interface ResAdminGetUserList extends Status{
     userList:UserItem[],
     total:number
 }
-
-
+// 获取验证码 修改密码
+interface AdminGetCheckCode {
+    readonly username: string;
+ }
+interface ResAdminGetCheckCode extends Status {
+}
+/**未登录 修改密码 */
+interface AdminUnLoginUpdatePwd {
+    readonly username: string;
+    readonly checkCode: string;
+    readonly newPassword: string;
+ }
+interface ResAdminUnLoginUpdatePwd extends Status {
+}
 export type{
     AdminLogin,
     ResAdminLogin,
@@ -108,5 +120,8 @@ export type{
     ResAdminDeleteUser,
     AdminUpdateEmail,
     ResAdminUpdateEmail,
-
+    AdminGetCheckCode,
+    ResAdminGetCheckCode,
+    AdminUnLoginUpdatePwd,
+    ResAdminUnLoginUpdatePwd
 }

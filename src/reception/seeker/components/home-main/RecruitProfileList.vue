@@ -12,16 +12,16 @@ import UpLoad from "@/components/UpLoad.vue";
 import type { recommondInfo } from "@/http/reception/receptionType";
 import { ref, watch } from "vue";
 import ScrollBottom from "@/components/ScrollBottom.vue";
-const { recommandList, total } = defineProps<{
+const recommondInfo = defineProps<{
   recommandList: recommondInfo[];
   total: number;
 }>();
+const isScroll = ref(false);
 const isListMap = {
   1: { type: "success", label: "已上市" },
   2: { type: "danger", label: "未上市" },
 };
 const pageNumber = ref(0);
-const isLoading = ref(false);
 const svg = `<path class="path" d="
           M 30 15
           L 28 17
@@ -30,19 +30,15 @@ const svg = `<path class="path" d="
           A 15 15, 0, 1, 1, 27.99 7.5
           L 15 15
         " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>`;
+// 滚动加载
 const handelPageNumber = () => {
   // 请求时，不允许进行滚动加载
-  if (recommandList.length !== total) {
-    isScroll.value = !isScroll.value;
-    pageNumber.value++;
-    isLoading.value = !isLoading.value;
-  }
+  // if (recommondInfo.recommandList.length !== recommondInfo.total) {
+  //   isScroll.value = !isScroll.value;
+  //   pageNumber.value++;
+  // }
 };
-watch(recommandList, () => {
-  isScroll.value = !isScroll.value;
-  isLoading.value = !isLoading.value;
-});
-const isScroll = ref(false);
+
 defineExpose({
   pageNumber,
 });
@@ -55,7 +51,6 @@ defineExpose({
       v-infinite-scroll="handelPageNumber"
       :infinite-scroll-disabled="isScroll"
       infinite-scroll-immediate="false"
-      v-loading="!isLoading"
       element-loading-text="加载中..."
       :element-loading-spinner="svg"
       element-loading-svg-view-box="-10, -10, 50, 50"
@@ -133,8 +128,7 @@ defineExpose({
 .scroll-warp {
   width: 80vw;
   margin: 0 auto;
-  height: 30rem;
-  // overflow: auto;
+  height: 50rem;
 }
 .description {
   display: flex;

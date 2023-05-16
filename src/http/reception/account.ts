@@ -15,19 +15,12 @@ function login(data: LoginType,res: (res: AxiosResponse<LoginRes, any>) => void)
     },res)
 }
 //  注册
-function registe({username,password,isRecommond,email,userContactInfo,nickName}: RegisteType,
+function registe(data: RegisteType,
 res: (res:AxiosResponse<Status, any>) => void){
 request({
     url:'user/registe',
     method:'post',
-    data:{
-        username,
-        password,
-        isRecommond,
-        email,
-        userContactInfo,
-        nickName
-    }
+    data
 },res)
 }
 

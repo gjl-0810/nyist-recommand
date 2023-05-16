@@ -50,28 +50,6 @@ onMounted(() => {
       <template #label>
         <div class="cell-item">
           <el-icon :style="iconStyle">
-            <iphone />
-          </el-icon>
-          联系方式
-        </div>
-      </template>
-      {{ accountInfo.contact }}
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          <el-icon :style="iconStyle">
-            <location />
-          </el-icon>
-          邮箱
-        </div>
-      </template>
-      {{ accountInfoStore.email }}
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          <el-icon :style="iconStyle">
             <tickets />
           </el-icon>
           昵称
@@ -85,10 +63,10 @@ onMounted(() => {
           <el-icon :style="iconStyle">
             <office-building />
           </el-icon>
-          内推者
+          身份
         </div>
       </template>
-      {{ accountInfo.isRecommond }}
+      {{ accountInfo.isRecommond ? "内推者" : "求职者" }}
     </el-descriptions-item>
   </el-descriptions>
 </template>

@@ -24,7 +24,7 @@ const handelDialog = () => {
     </template>
     <!-- 已创建职位 -->
     <PositionList />
-    <CreatePosition :dialog="dialogInfo.dialog" :handelclose="handelDialog" />
+    <CreatePositio :dialog="dialogInfo.dialog" :handelclose="handelDialog" />
   </el-card>
 </template>
 <style scoped lang="scss">

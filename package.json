@@ -13,11 +13,13 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
     "axios": "^1.2.6",
+    "echarts": "^5.4.2",
     "element-plus": "^2.3.2",
     "pdf-viewer-vue": "^0.2.7",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
     "vue-pdf": "^4.3.0",
+    "vue-puzzle-verification": "^1.0.2",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

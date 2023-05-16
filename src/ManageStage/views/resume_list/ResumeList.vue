@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, toRaw, watch } from "@vue/runtime-dom";
-import { STEP_TO_STATUS } from "@/utils/instance";
+import { TAG_MAP } from "@/reception/seeker/components/personal-main/personal-deliver/instance";
 import { ADMIN_PASSWORD, ADMIN_USER_NAME, getValue } from "@/cath";
 import type { CascaderValue } from "element-plus/es/components/cascader-panel/src/types";
 import { ElMessage } from "element-plus";
@@ -15,10 +15,6 @@ const cascaderList = reactive({
   companyList: [] as { label: string; value: string }[],
   resumePositionList: [] as { label: string; value: string }[],
 });
-// const searchInfo = reactive({
-//   companyName: "",
-//   recommondPosition: "",
-// });
 const companyName = ref("");
 const recommondPosition = ref("");
 const tableDate = reactive({
@@ -104,7 +100,7 @@ const getResumeInfo = () => {
 };
 Promise.all([getCompanyList(), getRecommondPositionList(), getResumeInfo()]);
 // 简历列表
-watch([recommondPosition, pageInfo], () => {
+watch([companyName, recommondPosition, pageInfo], () => {
   getResumeInfo();
 });
 </script>
@@ -145,10 +141,13 @@ watch([recommondPosition, pageInfo], () => {
         </template>
         <el-table-column label="投递日期" prop="date" align="center" />
         <el-table-column label="投递者邮箱" prop="deliverEmail" align="center" />
+        <el-table-column label="公司名称" prop="companyName" align="center" />
         <el-table-column label="投递职位" prop="recommondPosition" align="center" />
         <el-table-column label="简历状态" prop="deliverStatus" align="center">
-          <template #default="scope">
-            {{ STEP_TO_STATUS[scope.row.deliverStatus] }}
+          <template #default="{ row }">
+            <el-tag :type="TAG_MAP[row.deliverStatus as string]">{{
+              row.deliverStatus
+            }}</el-tag>
           </template>
         </el-table-column>
       </el-table-column>
@@ -170,6 +169,9 @@ watch([recommondPosition, pageInfo], () => {
   </el-card>
 </template>
 <style scoped lang="scss">
+.page {
+  margin: 2rem auto;
+}
 .icon {
   vertical-align: text-bottom;
 }

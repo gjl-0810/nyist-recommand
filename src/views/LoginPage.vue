@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { NAV_KEY, TOKEN, USERNAME, USER_NICk_NAME, getValue, setValue } from "@/cath";
+import { NAV_KEY, USERNAME, USER_NICk_NAME, getValue, setValue } from "@/cath";
+import UpdatePwd from './UpdatePwd.vue'
 import { login } from "@/http/reception/account";
-import LoginDialog from './LoginDialog.vue'
 import type { LoginType } from "@/http/reception/receptionType";
 import { ElMessage, type FormInstance } from "element-plus";
 import { reactive, ref } from "vue";
@@ -11,18 +11,11 @@ const loginInstance = reactive<LoginType>({
   password: "",
 });
 const formRef = ref<FormInstance>();
-const dialogInfo = {
-  tipMessage:'已检测到多个身份，请选择登录页面',
-  recommonder:'内推者',
-  seekers:'求职者'
-}
 const elMessage =()=>ElMessage({
           grouping: true,
           type: 'success',
           message: '登录成功',
         })
-const dialogStatus = ref(false);
-const {tipMessage,recommonder,seekers} = dialogInfo
 const onLogin = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate((valid) => {
@@ -31,16 +24,18 @@ const onLogin = (formEl: FormInstance | undefined) => {
         const {username,userNickName,isRecommand} = res.data;
         setValue(USERNAME,username)
         setValue(USER_NICk_NAME,userNickName)
-        if(isRecommand)dialogStatus.value = !dialogStatus.value;
-        else{
-          router.push(getValue(NAV_KEY)||'rep/home')
-          elMessage();
-        }
+        router.push(isRecommand?'/recommond/home' :'rep/home')
+        elMessage();
       });
     } else {
       return false;
     }
   });
+};
+/**控制 修改密码dialog */
+const isDialog = ref(false);
+const handelDialogClose = () => {
+  isDialog.value = !isDialog.value;
 };
 </script>
 <template>
@@ -55,7 +50,7 @@ const onLogin = (formEl: FormInstance | undefined) => {
       label="账号"
       prop="username"
       required
-      :rules="[{ required: true, type: 'number', message: '请填写账号' }]"
+      :rules="[{ required: true, type: 'any', message: '请填写合法账号' }]"
     >
       <el-input v-model.number="loginInstance.username" placeholder="请输入账号" />
     </el-form-item>
@@ -63,7 +58,7 @@ const onLogin = (formEl: FormInstance | undefined) => {
       label="密码"
       prop="password"
       required
-      :rules="[{ required: true, type: 'string', message: '请填写密码' }]"
+      :rules="[{ required: true, type: 'any', message: '请填写合法密码' }]"
     >
       <el-input
         type="password"
@@ -78,12 +73,18 @@ const onLogin = (formEl: FormInstance | undefined) => {
       >
     </el-form-item>
   </el-form>
-  <LoginDialog
-    :is-dialog="dialogStatus"
-    :skip-seekers="seekers"
-    :skip-recommonder="recommonder"
-    :Tipmessage="tipMessage"
-    :success-cb="elMessage"
+  <div class="handel-exchange">
+    <div>
+      <el-link type="success" @click="handelDialogClose">忘记密码？</el-link>
+    </div>
+    <div>
+      <el-link type="danger" @click="router.push('/registe')">还没有账号，去注册</el-link>
+    </div>
+  </div>
+  <UpdatePwd
+    v-if="isDialog"
+    :is-dialog="isDialog"
+    :handel-dialog-close="handelDialogClose"
   />
 </template>
 
@@ -95,6 +96,11 @@ const onLogin = (formEl: FormInstance | undefined) => {
 .loginButton {
   margin: 0 auto;
   width: 10rem;
+}
+.handel-exchange {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 // @media (max){
 

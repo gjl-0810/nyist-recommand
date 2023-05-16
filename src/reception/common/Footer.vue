@@ -14,7 +14,7 @@ const { content, connect } = toRefs(footerDate);
 <template>
   <footer class="footer">
     <span>{{ content }}</span>
-    <img src="connect" alt="wechat-connection" />
+    <!-- <img src="connect" alt="wechat-connection" /> -->
   </footer>
 </template>
 

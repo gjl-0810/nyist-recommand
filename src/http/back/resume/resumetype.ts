@@ -13,6 +13,7 @@ export interface RecommondResumePositionList{
     deliverEmail:string,      //投递者邮箱
     date:string,             //投递日期
     deliverStatus:string,    //投递状态
+    companyName:string,
     username:string,         
     deliverUsername:string
 }

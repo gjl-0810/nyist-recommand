@@ -1,29 +1,45 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script lang="ts" setup>
 import { Search } from "@element-plus/icons-vue";
-import RegionSelector from "@/reception/common/Region-selector.vue";
-import { useSearchStore } from "@/stores/seeker/search";
-const searchStore = useSearchStore();
+import { regionData } from "@/reception/seeker/components/home-main/instance";
+import { ref } from "vue";
+const cascader = ref(null);
+const searchInfo = defineProps<{
+  isList: number;
+  handelIsList: (value: number) => void;
+  searchInput: string;
+  handelInput: (value: string) => void;
+  position: string;
+  handelPosition: (value: string) => void;
+}>();
 </script>
 <template>
   <el-card class="card-warp" body-style="margin:0">
     <div class="search-warp">
       <el-input
-        v-model="searchStore.searchInput"
-        @change="searchStore.handelInput"
+        ref="cascader"
+        v-model="searchInfo.searchInput"
+        @change="searchInfo.handelInput"
         placeholder="请输入公司名称"
         class="input-with-select"
       >
         <template #prepend>
-          <RegionSelector />
+          <el-cascader
+            placeholder="请输入/选择地址"
+            filterable
+            v-model="searchInfo.position"
+            clearable
+            :options="regionData"
+            @change="searchInfo.handelPosition"
+          />
         </template>
         <template #append>
           <el-button :icon="Search" />
         </template>
       </el-input>
       <el-switch
-        v-model="searchStore.isList"
-        @change="searchStore.handelIsList"
+        v-model="searchInfo.isList"
+        @change="searchInfo.handelIsList"
         class="switch-content"
         inline-prompt
         active-text="已上市"
